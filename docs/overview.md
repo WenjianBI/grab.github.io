@@ -7,65 +7,63 @@ has_children: false
 has_toc: false
 ---
 
-# Overview of GRAB package 
+# Overview
 
-The ```GRAB``` package is mainly designed to conduct **genome-wide association studies (GWAS)** in terms of both single-variant and set-based analysis. In addition, the package can also be used 
-- to simulate genotype/phenotype data, 
-- to calculate sparse GRM, and 
-- to read in genotype data from PLINK/BGEN files.  
+The `GRAB` package is primarily designed to conduct **genome-wide association studies (GWAS)** for both single-variant and set-based analyses. Additionally, the package can be used:
 
-## Genome-wide association studies
+- to simulate genotype/phenotype data
+- to calculate sparse GRM
+- to read genotype data from PLINK/BGEN files
 
-All of these approaches share the same analysis framework including the following two steps
+## Genome-wide Association Studies
 
-- Step 1: Fit a null model using trait, covariates, and GRM (if applied).
-- Step 2: Conduct single-variant or set-based tests to identify marker or marker-set (e.g. gene) significantly associated with the trait of interest.
+All approaches share the same analysis framework, which includes the following two steps:
 
-The ```GRAB``` package supports multiple traits including
+- Step 1: Fit a null model using traits, covariates, and GRM (if applied).
+- Step 2: Conduct single-variant or set-based tests to identify markers or marker-sets (e.g., genes) significantly associated with the trait of interest.
 
-- Ordianl categorical trait (POLMM / POLMM-GENE), and
-- Time-to-event trait (SPACox)
+The `GRAB` package supports multiple trait types including:
+
+- Ordinal categorical traits (POLMM / POLMM-GENE)
+- Time-to-event traits (SPACox)
 - Model residuals after fitting a null model
 
-For binary/quantitative traits analysis, we plan to incorporate SAIGE/SAIGE-GENE in the ```GRAB``` package in the future. Currently, ```SAIGE``` package is still being continuously updated.
+The `GRAB` package includes `SPACox`, `SPAmix`, and `SPAGRM` methods that support model residuals as input. For any type of trait, users can select an appropriate model to fit the trait against confounding factors and then calculate model residuals. If the sum of the residuals is zero, they can serve as input for a GWAS.
 
-The ```GRAB``` package includes ```SPACox```, ```SPAmix```, and ```SPAGRM``` methods in which model residuals are supported as input. For any type of trait,  users can select an appropriate model to fit the trait to confounding factors and then calculate model residuals. If the sum of the residuals is zero, then it can serve as an input for a GWAS.
+The `GRAB` package supports the following genotype file formats for association studies:
 
-The ```GRAB``` package supports the below genotype file format for association studies
+- `PLINK` binary files (.bed, .bim, .fam)
+- `BGEN` (.bgen, .bgi, .sample)
 
-- ```PLINK``` binary files (.bed, .bim, .fam)
-- ```BGEN``` (.bgen, .bgi, .sample)
+## Preparation Before Using the GRAB Package
 
-## Preparation before using GRAB package
+The `GRAB` package supports using genotype data to adjust for sample relatedness via genetic relationship matrix (GRM). PLINK binary files with high-quality genotyped variants are required for this purpose. In UK Biobank real data analysis, we used the following cutoffs in PLINK to select ~340K SNPs for White British subjects:
 
-```GRAB``` package supports using genotype data to adjust for sample relatedness via genetic relationship matrix (GRM). PLINK binary files with high-quality genotyped variants are required for that purpose. In UK Biobank real data analysis, we used the following cutoffs in PLINK to select ~ 340K SNPs for White British subjects.
-
-```
+```sh
 --maf 0.05
 --indep-pairwise 500 50 0.2
 ```
 
-If the sample size in analysis is greater than 100,000, we recommend using sparse GRM (instead of dense GRM) to adjust for sample relatedness. The function ```getSparseGRM()``` internally uses ```GCTA``` software (gcta_1.93.1beta) to make a ```SparseGRMFile``` which will be passed to functions if needed. As required by ```GCTA``` software, the function can only support Linux and PLINK files. Two steps are needed as below. 
+If the sample size in the analysis is greater than 100,000, we recommend using sparse GRM (instead of dense GRM) to adjust for sample relatedness. The function `getSparseGRM()` internally uses `GCTA` software (we tested v1.93) to create a `SparseGRMFile` that will be passed to functions as needed. As required by the `GCTA` software, the function only supports Linux and PLINK files. Two steps are required:
 
-- Step 1: Run ```getTempFilesFullGRM()``` to save temporary files to tempDir.
+- Step 1: Run `getTempFilesFullGRM()` to save temporary files to tempDir.
 
-- Step 2: Run ```getSparseGRM()``` to combine the temporary files to make a ```SparseGRMFile```.
+- Step 2: Run `getSparseGRM()` to combine the temporary files to create a `SparseGRMFile`.
 
-Users can customize parameters including ```(minMafGRM, maxMissingGRM, nPartsGRM)```, but the above parameters should be consistant for functions ```getTempFilesFullGRM()``` and ```getSparseGRM()```. Otherwise, the temporary files cannot be accurately located.
+Users can customize parameters including `(minMafGRM, maxMissingGRM, nPartsGRM)`, but these parameters should be consistent for functions `getTempFilesFullGRM()` and `getSparseGRM()`. Otherwise, the temporary files cannot be accurately located.
 
-## Other functions in ```GRAB``` package
+## Other Functions in the `GRAB` Package
 
-The ```GRAB``` package provides some additional functions to facilitate users. More details can be seen in the corresponding sections. 
+The `GRAB` package provides additional functions to facilitate user workflows. More details can be found in the corresponding sections.
 
 ### Data Simulation
 
-The ```GRAB``` package can be used to simulate genotype/phenotype data.
+The `GRAB` package can be used to simulate genotype/phenotype data.
 
 ### Genetic Relationship Matrix (GRM)
 
-The ```GRAB``` package supports sparse GRM to adjust for family relatedness. Functions ```getTempFilesFullGRM()``` and ```getSparseGRM()``` can be used to generate a sparse GRM using PLINK files.
+The `GRAB` package supports sparse GRM to adjust for family relatedness. Functions `getTempFilesFullGRM()` and `getSparseGRM()` can be used to generate a sparse GRM using PLINK files.
 
-### Read in Genotype Data
+### Reading Genotype Data
 
-The ```GRAB``` package can also be used to read in genotype data to R from ```PLINK``` and ```BGEN``` files.
-
+The `GRAB` package can also be used to read genotype data into R from `PLINK` and `BGEN` files.

@@ -7,13 +7,13 @@ has_children: false
 has_toc: false
 ---
 
-The ```GRAB``` package gives function ```GRAB.ReadGeno``` to read in genotype data from ```PLINK``` and ```BGEN``` files.
+The `GRAB` package gives function `GRAB.ReadGeno` to read in genotype data from `PLINK` and `BGEN` files.
 
 ## Quick Start-up Guide
 
-The below gives an example to read in genotype data of SNPs in ```IDsToIncludeFile``` from PLINK/BGEN files to R
+The below gives an example to read in genotype data of SNPs in `IDsToIncludeFile` from PLINK/BGEN files to R
 
-```
+```r
 IDsToIncludeFile = system.file("extdata", "simuGENO.IDsToInclude", package = "GRAB")
 
 ## PLINK files
@@ -37,7 +37,7 @@ head(markerInfo)
 
 ## Usage
 
-```
+```r
 GRAB.ReadGeno(
   GenoFile,
   GenoFileIndex = NULL,
@@ -49,11 +49,11 @@ GRAB.ReadGeno(
 
 ## Arguments
 
-- ```GenoFile``` a character of genotype file. See Details section for more details.
-- ```GenoFileIndex``` additional index file(s) corresponding to GenoFile. See Details section for more details.
-- ```SampleIDs``` a character vector of sample IDs to extract. The default is NULL, that is, all samples in GenoFile will be extracted.
-- ```control``` a list of parameters to decide which markers to extract. See Details section for more details.
-- ```sparse``` a logical value (default: FALSE) to indicate if the output of genotype matrix is sparse.
+- `GenoFile` a character of genotype file. See Details section for more details.
+- `GenoFileIndex` additional index file(s) corresponding to GenoFile. See Details section for more details.
+- `SampleIDs` a character vector of sample IDs to extract. The default is NULL, that is, all samples in GenoFile will be extracted.
+- `control` a list of parameters to decide which markers to extract. See Details section for more details.
+- `sparse` a logical value (default: FALSE) to indicate if the output of genotype matrix is sparse.
 
 ## Details
 
@@ -102,4 +102,3 @@ The function returns an R list including a genotype matrix and an information ma
 - GenoMat: Genotype matrix, each row is for one sample and each column is for one marker.
 
 - markerInfo: Information matrix including 5 columns of CHROM, POS, ID, REF, and ALT.
-

@@ -8,11 +8,11 @@ parent: Data Simulation
 
 # Genotype simulation
 
-The ```GRAB``` package can be used to simulate genotype data for both unrelated and related subjects. The genotype example data in the directory ```system.file("extdata", package = "GRAB")``` is simulated as below line by line.       
+The `GRAB` package can be used to simulate genotype data for both unrelated and related subjects. The genotype example data in the directory `system.file("extdata", package = "GRAB")` is simulated as below line by line (we kept the first 1000 markers to minimize the package size).
 
 ## Quick Start-up Guide
 
-``` 
+```r
 set.seed(12345)
 OutList = GRAB.SimuGMat(nSub = 500,                   # 500 unrelated subjects
                         nFam = 50,                    # 50 families
@@ -21,18 +21,18 @@ OutList = GRAB.SimuGMat(nSub = 500,                   # 500 unrelated subjects
                         MaxMAF = 0.5, MinMAF = 0.05)  # MAFs follow a uniform distribuiton U(0.05, 0.5)
 ```
 
-The function ```GRAB.SimuGMat``` returns an R list ```OutList``` including two elements of ```GenoMat``` and ```markerInfo``` as below.
+The function `GRAB.SimuGMat` returns an R list `OutList` including two elements of `GenoMat` and `markerInfo` as below.
 
-```
+```r
 summary(OutList)
 #            Length   Class      Mode   
 # GenoMat    10000000 -none-     numeric
 # markerInfo        2 data.table list
 ```
 
-- ```markerInfo``` contains two columns: ```SNP``` and ```MAF```
+- `markerInfo` contains two columns: `SNP` and `MAF`
 
-```
+```r
 markerInfo = OutList$markerInfo
 markerInfo
 #              SNP       MAF
@@ -49,9 +49,9 @@ markerInfo
 # 10000: SNP_10000 0.1632723
 ```
 
-- ```GenoMat``` is a matrix, each row is for one subject and each column is for one SNP.
+- `GenoMat` is a matrix, each row is for one subject and each column is for one SNP.
 
-```
+```r
 GenoMat = OutList$GenoMat
 dim(GenoMat)   
 # [1]  1000 10000 # genotype matrix includes 1000 subjects and 10000 SNPs
@@ -75,15 +75,15 @@ GenoMat[c(1:5,996:1000),1:10]  # Subjects `f1_1` - `f1-10` are from family 1; `S
 
 ### Note about FamMode
 
-Currently, we support three ```FamMode``` including ```4-members```, ```10-members```, and ```20-members``` with the family structures as below. If ```nFam``` is not specified, then genotype were simulated only for unrelated subjects.
+Currently, we support three `FamMode` including `4-members`, `10-members`, and `20-members` with the family structures as below. If `nFam` is not specified, then genotype were simulated only for unrelated subjects.
 
-<img src="{{site.baseurl | prepend: site.url}}img/FamMode.jpg">
+![Family structure modes]({{site.baseurl | prepend: site.url}}img/FamMode.jpg)
 
 ## Simulate genotype missing
 
-The below gives an example to simluate genotype missing given a missing rate, in which ```-9``` is to indicate genotype missing, as PLINK does.
+The below gives an example to simluate genotype missing given a missing rate, in which `-9` is to indicate genotype missing, as PLINK does.
 
-```
+```r
 MissingRate = 0.05
 indexMissing = sample(length(GenoMat), MissingRate * length(GenoMat))
 GenoMat[indexMissing] = -9
@@ -105,15 +105,15 @@ GenoMat[c(1:5,996:1000),1:10]
 
 Note: this function is not computationally efficient and will be updated later.
 
-```
-extDir = system.file("extdata", package = "GRAB")
-extPrefix = paste0(extDir, "/simuPLINK")
+```r
+extDir = tempdir()
+extPrefix = file.path(extDir, "simuPLINK")
 GRAB.makePlink(GenoMat, extPrefix)
 ```
 
-If you have installed softwares PLINK1.9, PLINK2, and bgenix, then you can use the following commands to generate PLINK binary files and BGEN files. 
+If you have installed softwares PLINK1.9, PLINK2, and bgenix, then you can use the following commands to generate PLINK binary files and BGEN files.
 
-```
+```r
 setwd(extDir)
 system("plink --file simuPLINK --make-bed --out simuPLINK")
 system("plink --bfile simuPLINK --recode A --out simuRAW")
@@ -123,17 +123,18 @@ system("bgenix -g simuBGEN.bgen -index")
 
 ## Rare variants simulation (mainly to evaluate set-based approaches): (to be updated: 2022-08-22)
 
-Given arguments of ```MaxMAF``` and ```MinMAF```, function ```GRAB.SimuGMat``` can simulate 
-- common variants (MAF > 5%) and 
-- low frequency variants (1% < MAF < 5%). 
+Given arguments of `MaxMAF` and `MinMAF`, function `GRAB.SimuGMat` can simulate
 
-For rare variants (MAF < 1%), we suggest using real genotype data from unrelated subjects to simulate family structure while mimicking the LD structure. 
+- common variants (MAF > 5%) and
+- low frequency variants (1% < MAF < 5%).
+
+For rare variants (MAF < 1%), we suggest using real genotype data from unrelated subjects to simulate family structure while mimicking the LD structure.
 
 ### Simulate genotype using real data
 
-Function ```GRAB.SimuGMatFromGenoFile``` can simulate genotype data using PLINK and BGEN files.
+Function `GRAB.SimuGMatFromGenoFile` can simulate genotype data using PLINK and BGEN files.
 
-```
+```r
 set.seed(123)
 nFam = 50
 nSub = 500
@@ -156,13 +157,12 @@ GenoList = GRAB.SimuGMatFromGenoFile(nFam, nSub, FamMode, PLINKFile,
 
 Then, we make PLINK files using the genotype data
 
-```
+```r
 GenoMat = GenoList$GenoMat
 GenoMat[is.na(GenoMat)] = -9
-extDir = system.file("extdata", package = "GRAB")
-extPrefix = paste0(extDir, "/simuPLINK_RV")
+extDir = tempdir()
+extPrefix = file.path(extDir, "simuPLINK_RV")
 GRAB.makePlink(GenoMat, extPrefix)
 setwd(extDir)
 system("plink --file simuPLINK_RV --make-bed --out simuPLINK_RV")
 ```
-

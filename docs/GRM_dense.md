@@ -9,4 +9,4 @@ has_children: false
 
 ## About dense GRM in GRAB package
 
-Parts of approaches in GRAB package supports using dense GRM to adjust for family relatedness. 
+Parts of approaches in GRAB package supports using dense GRM to adjust for family relatedness.

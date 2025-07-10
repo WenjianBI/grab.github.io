@@ -8,43 +8,44 @@ has_children: false
 has_toc: false
 ---
 
-# POLMM approaches 
+# POLMM Approaches
 
-```POLMM``` and ```POLMM-GENE``` are accurate and efficient approaches to associate an ordinal categorical trait to single-variant and variant-set (e.g. gene), respectively.
+`POLMM` and `POLMM-GENE` are accurate and efficient approaches for associating ordinal categorical traits with single variants and variant sets (e.g., genes), respectively.
 
-## Main features
+## Main Features
 
-```POLMM``` and ```POLMM-GENE``` are
+`POLMM` and `POLMM-GENE` are:
 
-- designed for ordinal categorical trait analysis,
-- accurate for unbalanced phenotypic distribution (e.g. sample size proportion in three levels is 30:1:1 ),
-- scalable for a large-scale biobank data analysis (e.g. UK Biobank),
-- support both dense GRM and sparse GRM (recommanded) to adjust for family relatedness,
-- support both single-variant analysis and set-based analysis (Burden tests, SKAT, and SKAT-O).
+- designed for ordinal categorical trait analysis
+- accurate for unbalanced phenotypic distributions (e.g., sample size proportions across three levels of 30:1:1)
+- scalable for large-scale biobank data analysis (e.g., UK Biobank)
+- support both dense GRM and sparse GRM (recommended) to adjust for family relatedness
+- support both single-variant analysis and set-based analysis (Burden tests, SKAT, and SKAT-O)
 
-## Important notes prior to analysis
+## Important Notes Prior to Analysis
 
-- For function ```GRAB.NullModel```, the left side of argument ```formula``` should be a factor when fitting a null model in step 1. If function ```factor``` is used to convert phenotype to a factor, we highly recommend specifying argument ```levels``` explicitly.
+- For the function `GRAB.NullModel`, the left side of the `formula` argument should be a factor when fitting a null model in step 1. If the `factor` function is used to convert phenotype to a factor, we highly recommend specifying the `levels` argument explicitly.
 
-- We recommend using sparse GRM to adjust for family relatedness due to its high computational efficiency. And generally, we did not observe a power loss compared to using dense GRM.
+- We recommend using sparse GRM to adjust for family relatedness due to its high computational efficiency. Generally, we did not observe power loss compared to using dense GRM.
 
 ## Quick Start-up Guide
 
-The below gives an example to demonstrate the usage of POLMM approaches 
+The following example demonstrates the usage of POLMM approaches.
 
-### First read in data and convert phenotype to a factor
+### First, Read Data and Convert Phenotype to a Factor
 
-```
+```r
 library(GRAB)
+library(dplyr)
 PhenoFile = system.file("extdata", "simuPHENO.txt", package = "GRAB")
-PhenoData = data.table::fread(PhenoFile, header = T)
+PhenoData = data.table::fread(PhenoFile, header = TRUE)
 PhenoData = PhenoData %>% mutate(OrdinalPheno = factor(OrdinalPheno, 
                                                        levels = c(0, 1, 2)))
 ```
 
-### Step 1(a): If dense GRM is used in model fitting, please first prepare PLINK files ```GenoFile```
+### Step 1(a): If dense GRM is used in model fitting, `GenoFile` is required
 
-```
+```r
 GenoFile = system.file("extdata", "simuPLINK.bed", package = "GRAB")
 obj.POLMM = GRAB.NullModel(factor(OrdinalPheno) ~ AGE + GENDER,
                            data = PhenoData, 
@@ -58,9 +59,9 @@ obj.POLMM = GRAB.NullModel(factor(OrdinalPheno) ~ AGE + GENDER,
                                           tolBeta = 0.1))
 ```
 
-### Step 1(b): If sparse GRM is used in model fitting, please first prepare sparse GRM file ```SparseGRMFile```
+### Step 1(b): If sparse GRM is used in model fitting, `SparseGRMFile` is required
 
-```
+```r
 SparseGRMFile =  system.file("SparseGRM", "SparseGRM.txt", package = "GRAB")
 GenoFile = system.file("extdata", "simuPLINK.bed", package = "GRAB")
 obj.POLMM = GRAB.NullModel(formula = OrdinalPheno ~ AGE + GENDER,
@@ -74,19 +75,21 @@ obj.POLMM = GRAB.NullModel(formula = OrdinalPheno ~ AGE + GENDER,
                                           LOCO = FALSE, 
                                           tolTau = 0.2, 
                                           tolBeta = 0.1))
-objPOLMMFile = system.file("results", "objPOLMMFile.RData", package = "GRAB")                                       
+
+OutputDir = tempdir()
+objPOLMMFile = file.path(OutputDir, "objPOLMMFile.RData")                                      
 save(obj.POLMM, file = objPOLMMFile)                                        
 ```
 
 ### Step 2(a): Single-variant tests using POLMM
 
-```
+```r
 objPOLMMFile = system.file("results", "objPOLMMFile.RData", package = "GRAB")  
 load(objPOLMMFile)   # read in an R object of "obj.POLMM"
 
 GenoFile = system.file("extdata", "simuPLINK.bed", package = "GRAB")
-OutputDir = system.file("results", package = "GRAB")
-OutputFile = paste0(OutputDir, "/simuMarkerOutput.txt")
+OutputDir = tempdir()
+OutputFile = file.path(OutputDir, "simuMarkerOutput.txt")
 GRAB.Marker(obj.POLMM, GenoFile = GenoFile,
             OutputFile = OutputFile)
 
@@ -96,13 +99,13 @@ hist(results$Pvalue)
 
 ### Step 2(b): Set-based tests using POLMM-GENE
 
-```
+```r
 objPOLMMFile = system.file("results", "objPOLMMFile.RData", package = "GRAB")  
 load(objPOLMMFile)   # read in an R object of "obj.POLMM"
 
 GenoFile = system.file("extdata", "simuPLINK_RV.bed", package = "GRAB")
-OutputDir = system.file("results", package = "GRAB")
-OutputFile = paste0(OutputDir, "/simuRegionOutput.txt")
+OutputDir = tempdir()
+OutputFile = file.path(OutputDir, "simuRegionOutput.txt")
 GroupFile = system.file("extdata", "simuPLINK_RV.group", package = "GRAB")
 SparseGRMFile = system.file("SparseGRM", "SparseGRM.txt", package = "GRAB")
 
@@ -123,10 +126,8 @@ GRAB.Region(objNull = obj.POLMM,
 data.table::fread(OutputFile)
 ```
 
-
 ## Citation
 
 - POLMM: Bi, Wenjian, Wei Zhou, Rounak Dey, Bhramar Mukherjee, Joshua N. Sampson, and Seunggeun Lee. **Efficient mixed model approach for large-scale genome-wide association studies of ordinal categorical phenotypes.** *The American Journal of Human Genetics* 108, no. 5 (2021): 825-839.
 
 - POLMM-GENE: Bi, Wenjian, Wei Zhou, Peipei Zhang, Yaoyao Sun, Weihua Yue, and Seunggeun Lee. **Scalable mixed model approaches for set-based association studies on large-scale categorical data analysis and its application to 450k exome sequencing data in UK Biobank.** To be submitted.
-

@@ -7,23 +7,25 @@ has_children: true
 has_toc: true
 ---
 
-# Genome-wide association studies
+# Genome-wide Association Studies
 
-```GRAB``` package gives a generic framework to analyze a wide variaty of phenotypes. 
+The **GRAB** package provides a generic framework to analyze a wide variety of phenotypes.
 
-## Quick start-up examples
+## Quick Start-up Examples
 
-The below gives an example to use POLMM and POLMM-GENE to analyze ordinal categorical trait. 
+The following example demonstrates how to use POLMM and POLMM-GENE to analyze ordinal categorical traits.
 
-```
+```r
 library(GRAB)
+library(dplyr)
+
 PhenoFile = system.file("extdata", "simuPHENO.txt", package = "GRAB")
 PhenoData = data.table::fread(PhenoFile, header = T)
 PhenoData = PhenoData %>% mutate(OrdinalPheno = factor(OrdinalPheno, 
                                                        levels = c(0, 1, 2)))
 
 # Step 1: fit a null model
-SparseGRMFile =  system.file("SparseGRM", "SparseGRM.txt", package = "GRAB")
+SparseGRMFile = system.file("SparseGRM", "SparseGRM.txt", package = "GRAB")
 GenoFile = system.file("extdata", "simuPLINK.bed", package = "GRAB")
 obj.POLMM = GRAB.NullModel(formula = OrdinalPheno ~ AGE + GENDER,
                            data = PhenoData, 
@@ -35,12 +37,12 @@ obj.POLMM = GRAB.NullModel(formula = OrdinalPheno ~ AGE + GENDER,
                            control = list(showInfo = FALSE, 
                                           LOCO = FALSE, 
                                           tolTau = 0.2, 
-                                          tolBeta = 0.1))                                                       
+                                          tolBeta = 0.1))
 
 # Step 2(a): conduct a marker-level association study
 GenoFile = system.file("extdata", "simuPLINK.bed", package = "GRAB")
-OutputDir = system.file("results", package = "GRAB")
-OutputFile = paste0(OutputDir, "/simuMarkerOutput.txt")
+OutputDir = tempdir()
+OutputFile = file.path(OutputDir, "simuMarkerOutput.txt")
 GRAB.Marker(obj.POLMM, GenoFile = GenoFile,
             OutputFile = OutputFile)
 
@@ -49,8 +51,8 @@ hist(results$Pvalue)
 
 # Step 2(b): conduct a set-based association study
 GenoFile = system.file("extdata", "simuPLINK_RV.bed", package = "GRAB")
-OutputDir = system.file("results", package = "GRAB")
-OutputFile = paste0(OutputDir, "/simuRegionOutput.txt")
+OutputDir = tempdir()
+OutputFile = file.path(OutputDir, "simuRegionOutput.txt")
 GroupFile = system.file("extdata", "simuPLINK_RV.group", package = "GRAB")
 SparseGRMFile = system.file("SparseGRM", "SparseGRM.txt", package = "GRAB")
 
@@ -66,32 +68,27 @@ GRAB.Region(objNull = obj.POLMM,
 data.table::fread(OutputFile)
 ```
 
-## Step 1: choose ```traitType``` and ```method```
+## Step 1: Choose `traitType` and `method`
 
-Arguments ```traitType``` and ```method``` are to specify the type of phenotype data and the analysis approach. Currently, ```GRAB``` package supports the below combinations
+Arguments `method` and `traitType` specify the type of phenotype data and the analysis approach. Currently, `GRAB.NullModel()` supports the following combinations:
 
-| phenotype                 | ```traitType``` |```method```| Related subjects |
-|:-------------------------:|:---------------:|:----------:|:----------------:|
-| binary trait              | "binary"        | "SAIGE"    |  YES             |
-| quantitative trait        | "quantitative"  | "SAIGE"    |  YES             |
-| ordinal categorical trait | "ordinal"       | "POLMM"    |  YES             |
-| time-to-event trait       | "time-to-event" | "SPACox"   |  NO              |
+| method                | traitType        | Related subjects | Other features                                                         |
+|:----------------------|:-----------------|:-----------------|:-----------------------------------------------------------------------|
+| `POLMM`, `POLMM-GENE` | `ordinal`        | Yes              | POLMM-GENE is a variant-set-based test                                 |
+| `SPACox`, `SPAmix`    | `time-to-event`  | No               | SPAmix is designed for admixed population using individual-specific AF |
+| `WtCoxG`              | `time-to-event`  | Yes              | WtCoxG boosts power using reference population AF                      |
 
-## Step 2: choose Dense GRM or Sparse GRM
+## Step 2: Choose Dense GRM or Sparse GRM
 
-Both dense GRM and sparse GRM are supported in ```GRAB``` package to adjust for family relatedness, which can avoid inflated type I error rates.
+Both dense GRM and sparse GRM are supported in the `GRAB` package to adjust for family relatedness, which can prevent inflated type I error rates.
 
-| Which GRM   | Pros.    | Cons       | Required arguments  |
-|:-----------:|:----------:|:--------:|:-------------------:|
-| Dense GRM   | More powerful | Slow  | ```SparseGRMFile``` |
-| Sparse GRM  | Fast  | Less powerful | ```GenoFile```      |
+| GRM Type   | Advantages     | Disadvantages   | Required arguments |
+|:----------:|:--------------:|:---------------:|:------------------:|
+| Dense GRM  | More powerful  | Slow            | `GenoFile`         |
+| Sparse GRM | Fast           | Less powerful   | `SparseGRMFile`    |
 
-NOTE: Extensive simulation results suggests that, for binary and ordinal categorical data analysis, using dense and sparse GRM perform similarly in terms of both type I error rates and powers.
+**NOTE:** Extensive simulation results suggest that for binary and ordinal categorical data analysis, dense and sparse GRM perform similarly in terms of both type I error rates and statistical power.
 
-## Note: about argument ```control``` 
+## Note About the `control` Argument
 
-Argument ```control``` is to specify a list of parameters for controlling the fitting and association testing process. 
-
-
-
-
+The `control` argument specifies a list of parameters for controlling the fitting and association testing process.

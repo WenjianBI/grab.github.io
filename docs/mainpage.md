@@ -6,75 +6,83 @@ description: "Main page for GRAB package."
 permalink: /
 ---
 
-# Main features of GRAB package
+## Main Features
 
-The ```GRAB``` is an R package for Genome-wide Robust Analysis designed for Biobank data **(GRAB)**. 
-The main features of the package are as below. 
+`GRAB` is an R package for Genome-wide Robust Analysis designed for biobank data.
+The main features of the package are as follows:
 
-- Support multiple complex traits including 
-  - quantitative trait
-  - binary trait 
-  - time-to-event trait 
-  - ordinal categorical trait
-  - longitudinal trait
-- Perform single-variant and set-based association tests 
-- Account for sample relatedness using Genetic Relationship Matrix **(GRM)**
-- Calibrate p-values using normal distribution approximation and Saddlepoint approximation **(SPA)** 
-  - are computationally efficient for large data sets (e.g. UK Biobank)
-  - can handle unbalanced phenotypic distribution (e.g. case-control imbalance of binary traits)
-  - are robust for both common variants and rare variants
+- Supports multiple complex traits including:
+  - quantitative traits
+  - binary traits
+  - time-to-event traits
+  - ordinal categorical traits
+  - longitudinal traits
+- Performs single-variant and set-based association tests
+- Accounts for sample relatedness using Genetic Relationship Matrix **(GRM)**
+- Calibrates p-values using normal distribution approximation and Saddlepoint approximation **(SPA)**, which:
+  - are computationally efficient for large datasets (e.g., UK Biobank)
+  - can handle unbalanced phenotypic distributions (e.g., case-control imbalance in binary traits)
+  - are robust for both common and rare variants
 
-For set-based association tests, ```GRAB``` package
-- performs Burden test, SKAT, and SKAT-O 
-- allows for tests on multiple minor allele frequency cutoffs and functional annotations
-- allows for specifying weights for single variants in the set-based tests
-- performs conditional analysis to identify associations independent from nearly GWAS signals
+For set-based association tests, the `GRAB` package:
 
+- performs Burden test, SKAT, and SKAT-O
+- allows tests on multiple minor allele frequency cutoffs and functional annotations
+- allows specification of weights for single variants in set-based tests
+- performs conditional analysis to identify associations independent of nearby GWAS signals
 
 ## Supported Approaches
 
-### POLMM / POLMM-GENE:
-- Support ordinal categorical trait
+### POLMM / POLMM-GENE
+
+- Supports ordinal categorical traits
 - Single-variant / set-based tests
 - Can account for sample relatedness
 - Reference
-  - Bi, Wenjian, Wei Zhou, Rounak Dey, Bhramar Mukherjee, Joshua N. Sampson, and Seunggeun Lee. **Efficient mixed model approach for large-scale genome-wide association studies of ordinal categorical phenotypes.** *The American Journal of Human Genetics* 108, no. 5 (2021): 825-839.
-  - Bi, Wenjian, Wei Zhou, Peipei Zhang, Yaoyao Sun, Weihua Yue, and Seunggeun Lee. **Scalable mixed model approaches for set-based association studies on large-scale categorical data analysis and its application to 450k exome sequencing data in UK Biobank.** *The American Journal of Human Genetics* 110, no. 5 (2023): 762-773.
+  - Wenjian Bi, Wei Zhou, Rounak Dey, Bhramar Mukherjee, Joshua N. Sampson, and Seunggeun Lee. **Efficient mixed model approach for large-scale genome-wide association studies of ordinal categorical phenotypes.** *The American Journal of Human Genetics* 108, no. 5 (2021): 825-839.
+  - Wenjian Bi, Wei Zhou, Peipei Zhang, Yaoyao Sun, Weihua Yue, and Seunggeun Lee. **Scalable mixed model approaches for set-based association studies on large-scale categorical data analysis and its application to 450k exome sequencing data in UK Biobank.** *The American Journal of Human Genetics* 110, no. 5 (2023): 762-773.
 
-### SPACox:
-- Support (but not limited to) time-to-event trait
-- Support model residuals (whose sum is zero) after fitting a null model to any type of trait 
+### SPACox
+
+- Supports (but not limited to) time-to-event traits
+- Supports model residuals (whose sum is zero) after fitting a null model to any type of trait
 - Single-variant tests
 - Cannot account for sample relatedness
 - Reference
-  - Bi, Wenjian, Lars G. Fritsche, Bhramar Mukherjee, Sehee Kim, and Seunggeun Lee. **A fast and accurate method for genome-wide time-to-event data analysis and its application to UK Biobank.** *The American Journal of Human Genetics* 107, no. 2 (2020): 222-233.
+  - Wenjian Bi, Lars G. Fritsche, Bhramar Mukherjee, Sehee Kim, and Seunggeun Lee (2020). **A fast and accurate method for genome-wide time-to-event data analysis and its application to UK Biobank.** *The American Journal of Human Genetics* 107, no. 2: 222-233.
 
-### SPAmix:
-- Support (but not limited to) time-to-event trait
-- Support model residuals (whose sum is zero) after fitting a null model to any type of trait 
-- Can support admixture population or multiple populations
+### SPAmix
+
+- Supports (but not limited to) time-to-event traits
+- Supports model residuals (whose sum is zero) after fitting a null model to any type of trait
+- Can support admixed populations or multiple populations
 - Single-variant tests
 - Cannot account for sample relatedness
-- Reference (to be submitted)
+- Reference
+  - Yuzhuo Ma, He Xu, Ying Li, Hyesung Kim, Lin-lin Xu, Lin Miao, Peng Xu, Fengbiao Mao, Xu-jie Zhou, Wei Zhou, Seunggeun Lee, Ji-Feng Zhang, Peipei Zhang, Wenjian Bi (2025). **A scalable, accurate, and universal analysis framework using individual-specific allele frequency for large-scale genetic association studies in an admixed population**. *Genome Biology* in press
 
-### SPAGRM:
-- Support (but not limited to) time-to-event trait
-- Support model residuals (whose sum is zero) after fitting a null model to any type of trait 
+### SPAGRM
+
+- Supports (but not limited to) time-to-event traits
+- Supports model residuals (whose sum is zero) after fitting a null model to any type of trait
 - Single-variant tests
 - Can account for sample relatedness
-- Reference (to be submitted)
+- Reference
+  - He Xu, Yuzhuo Ma, Lin-lin Xu, Yin Li, Yufei Liu, Ying Li, Xu-jie Zhou, Wei Zhou, Seunggeun Lee, Peipei Zhang, Weihua Yue and Wenjian Bi (2025). **SPA(GRM): effectively controlling for sample relatedness in large-scale genome-wide association studies of longitudinal traits**. *Nature Communications* 16(1): 1413.
 
-### SAIGE / SAIGE-GENE+ (supported later, please refer to SAIGE package):
-- Support quantitative and binary trait
-- Single-variant / set-based tests
+### WtCoxG
+
+- Supports time-to-event traits
+- Single-variant tests
+- Uses external allele frequencies to improve statistical power
 - Can account for sample relatedness
 - Reference
-  - Zhou, Wei, Jonas B. Nielsen, Lars G. Fritsche, Rounak Dey, Maiken E. Gabrielsen, Brooke N. Wolford, Jonathon LeFaive et al. **Efficiently controlling for case-control imbalance and sample relatedness in large-scale genetic association studies.** *Nature genetics* 50, no. 9 (2018): 1335-1341.
-  - Zhou, Wei, Zhangchen Zhao, Jonas B. Nielsen, Lars G. Fritsche, Jonathon LeFaive, Sarah A. Gagliano Taliun, Wenjian Bi et al. **Scalable generalized linear mixed model for region-based association tests in large biobanks and cohorts.** *Nature genetics* 52, no. 6 (2020): 634-639.
-  - Zhou, Wei, Wenjian Bi, Zhangchen Zhao, Kushal K. Dey, Karthik A. Jagadeesh, Konrad J. Karczewski, Mark J. Daly, Benjamin M. Neale, and Seunggeun Lee. **SAIGE-GENE+ improves the efficiency and accuracy of set-based rare variant association tests** *Nature genetics* 54, no. 10 (2022): 1466-1469.
+  - Ying Li, Yuzhuo Ma, He Xu, Yaoyao Sun, Min Zhu, Weihua Yue, Wei Zhou and Wenjian Bi (2025). **Applying weighted Cox regression to boost powers for genome-wide association studies of time-to-event phenotypes**. *Nature Computational Science* in press.
 
 ## License
-```GRAB``` is distributed under an GPL license.
+
+`GRAB` is distributed under a GPL license.
 
 ## Contact
-If you have any questions about ```GRAB``` package, please contact **wenjianb@pku.edu.cn**
+
+If you have any questions about the `GRAB` package, please contact [wenjianb@pku.edu.cn](mailto:wenjianb@pku.edu.cn)

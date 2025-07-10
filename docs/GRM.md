@@ -9,12 +9,12 @@ has_toc: true
 
 # Genetic Relation Matrix (GRM)
 
-Both dense GRM and sparse GRM are supported in ```GRAB``` package to characterize family relatedness, which can avoid high type one error rates.
+Both dense GRM and sparse GRM are supported in `GRAB` package to characterize family relatedness, which can avoid high type one error rates.
 
 | Which GRM   | Pros.    | Cons       | Required arguments  |
 |:-----------:|:----------:|:--------:|:-------------------:|
-| Dense GRM   | More powerful | Slow  | ```SparseGRMFile``` |
-| Sparse GRM  | Fast  | Less powerful | ```GenoFile```      |
+| Dense GRM   | More powerful | Slow  | `GenoFile`          |
+| Sparse GRM  | Fast  | Less powerful | `SparseGRMFile`     |
 
 NOTE: Based on simulation and real data analysis results, for binary and ordinal categorical data analysis, analyses using dense and sparse GRM perform similarly in terms of both type one error rates and powers.
 

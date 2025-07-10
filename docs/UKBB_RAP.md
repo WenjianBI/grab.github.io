@@ -6,6 +6,7 @@ description: "Just the Docs is a responsive Jekyll theme with built-in search th
 has_children: false
 ---
 
+
 # UK Biobank Research Analyses Platform (RAP)
 
 UK Biobank Research Analyses Platform (RAP) enables researchers working with UK Biobank's large-scale biomedical database and research resource, to access it in the cloud from anywhere in the world. It has been designed to accommodate the vast and increasing scale of the UK Biobank resource.
@@ -14,25 +15,25 @@ UK Biobank Research Analyses Platform (RAP) enables researchers working with UK 
 
 We record the process of POLMM-GENE analysis on UK Biobank RAP via docker
 
-- Put all files in https://github.com/GeneticAnalysisinBiobanks/GRAB/tree/main/docker to a local directory
+- Put all files in [this folder](https://github.com/GeneticAnalysisinBiobanks/GRAB/tree/main/docker) to a local directory
 
 - Run the following command to install the GRAB package via docker
 
-```
+```sh
 docker build --build-arg version=0.0.3.3 -t user/grab:0.0.3.3 .
 docker save user/grab:0.0.3.3 > grab_0.0.3.3.tar
 gzip grab_0.0.3.3.tar
 ```
 
 - Move the below files to UK Biobank RAP
-  - grab_0.0.3.3.tar.gz
-  - grab_ReadGeno.wdl
-  - grea_Region.wdl
+  - `grab_0.0.3.3.tar.gz`
+  - `grab_ReadGeno.wdl`
+  - `grea_Region.wdl`
   - results of null model fitting
 
 The below is an example we used
 
-```
+```sh
 dx upload grab_0.0.3.3.tar.gz   # the location should be the same as in XXX.wdl files
 dx mkdir /WES_450k/cognitive_120042_batch
 dx cd /WES_450k/cognitive_120042_batch
@@ -42,14 +43,14 @@ dx upload cognitive_120042_batch.RData
 
 Try the following codes
 
-```
+```sh
 docker run wenjianb/grab:0.0.3.3 Rscript GRAB.Region.R --help
 docker run wenjianb/grab:0.0.3.3 Rscript GRAB.ReadGeno.R --help
 ```
 
 - Build the workflow of GRAB
 
-```
+```sh
 java -jar dxCompiler-2.9.0.jar compile grab_Region.wdl -project project-G7KJj3QJyFVxfVvBKGxQP2kX -folder /workflows/ -f
 # record workflow ID, e.g. workflow-GB3q1YjJyFVgYj3v0V66YqzV
 ```
@@ -58,7 +59,7 @@ java -jar dxCompiler-2.9.0.jar compile grab_Region.wdl -project project-G7KJj3QJ
 
 The below is an example we used.
 
-```
+```sh
 for chr in 1 2 3 6 7 11 12 16 17 19
 do
 dx run workflow-GB3q1YjJyFVgYj3v0V66YqzV \
