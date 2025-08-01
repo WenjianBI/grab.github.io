@@ -14,6 +14,7 @@ GRAB is an R package, with part of its code written in C++ for improved performa
 ## Install via CRAN
 
 [![CRAN Status](https://www.r-pkg.org/badges/version/GRAB)](https://CRAN.R-project.org/package=GRAB)
+[![CRAN Downloads](https://cranlogs.r-pkg.org/badges/grand-total/GRAB)](https://CRAN.R-project.org/package=GRAB)
 
 Install GRAB from CRAN in your R console:
 
