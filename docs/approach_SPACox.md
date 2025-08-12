@@ -22,11 +22,11 @@ The three methods use empirical SPA approaches and share the below features.
 
 The three methods are different in terms of
 
-- `SPACox` is the basic function to analyze unrelated subjects in a homozygous population.
+- `SPACox` is the basic function to analyze unrelated subjects in a homogeneous population.
 
 - `SPAmix` extends `SPACox` to analyze an admixture population or multiple populations. The method is still only valid to analyze unrelated subjects.
 
-- `SPAGRM` extends `SPACox` to analyze a study cohort in which subjects can be genetically related to each other. The method is still only valid to analyze a homozygous population.
+- `SPAGRM` extends `SPACox` to analyze a study cohort in which subjects can be genetically related to each other. The method is still only valid to analyze a homogeneous population.
 
 ## Important notes about function `GRAB.NullModel`
 
@@ -130,7 +130,7 @@ OutputFile = file.path(OutputDir, "Results_SPAmix.txt")
 GRAB.Marker(obj.SPAmix, GenoFile = GenoFile, OutputFile = OutputFile)
 ```
 
-Detailed documentation about how to use SPAGRM is available at [SPAGRM online tutorial](https://fantasy-xuhe.github.io/SPAGRM.github.io/).
+Detailed documentation about how to use SPAGRM is available at [SPAGRM online tutorial](https://hexupku.github.io/SPAGRM.github.io/).
 
 ## Citation
 
