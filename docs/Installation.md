@@ -9,6 +9,10 @@ has_toc: false
 
 # Installation
 
+![Linux](https://img.shields.io/badge/Linux-000?logo=linux&logoColor=white)
+![Windows](https://img.shields.io/badge/Windows-0078D6?logo=windows&logoColor=white)
+![macOS](https://img.shields.io/badge/macOS-000?logo=apple&logoColor=white)
+
 GRAB is an R package, with part of its code written in C++ for improved performance. GRAB can be installed on Linux, Windows, or macOS via CRAN, Conda, or from source code.
 
 ## Install via CRAN
@@ -35,7 +39,7 @@ conda create -n grab_env -c conda-forge r-grab
 
 ## Install from source code
 
-[![GitHub source](https://img.shields.io/badge/GitHub-source-black?logo=github)](https://github.com/GeneticAnalysisinBiobanks/GRAB)
+[![GitHub main](https://img.shields.io/badge/GitHub-main-black?logo=github)](https://github.com/GeneticAnalysisinBiobanks/GRAB)
 [![License: GPL v2+](https://img.shields.io/badge/License-GPL%20v2%2B-blue.svg)](https://www.gnu.org/licenses/old-licenses/gpl-2.0.html)
 
 First, create an environment for GRAB using Conda:

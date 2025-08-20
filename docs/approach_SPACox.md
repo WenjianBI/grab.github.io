@@ -44,7 +44,6 @@ The below gives examples to demonstrate the usage of `SPACox`, `SPAmix`, and `SP
 
 ```r
 library(GRAB)
-library(dplyr)
 library(survival)
 
 PhenoFile = system.file("extdata", "simuPHENO.txt", package = "GRAB")
@@ -82,9 +81,6 @@ obj.SPACox = GRAB.NullModel(
 PhenoFile = system.file("extdata", "simuPHENO.txt", package = "GRAB")
 PhenoData = data.table::fread(PhenoFile, header = T)
 
-N = nrow(PhenoData)
-PhenoData = PhenoData %>% mutate(PC1 = rnorm(N), PC2 = rnorm(N))
-
 obj.SPAmix = GRAB.NullModel(
   Surv(SurvTime, SurvEvent) ~ AGE + GENDER + PC1 + PC2, 
   data = PhenoData, 
@@ -99,7 +95,7 @@ The same results can be obtained via using model residuals
 
 ```r
 obj.coxph = coxph(
-  Surv(SurvTime, SurvEvent )~ AGE + GENDER + PC1 + PC2, 
+  Surv(SurvTime, SurvEvent ) ~ AGE + GENDER + PC1 + PC2, 
   data = PhenoData
 )
 

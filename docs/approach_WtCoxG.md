@@ -75,7 +75,7 @@ RefPrevalence = 0.1
   If the study cohort includes related samples, the sparse GRM file is needed, which must contain three columns: the first column `ID1`, the second column `ID2`, and the last column `Value` (i.e., two times of kinship coefficient between ID1 and ID2).
 
 ```r
-SparseGRMFile = system.file("SparseGRM", "SparseGRM.txt", package = "GRAB")
+SparseGRMFile = system.file("extdata", "SparseGRM.txt", package = "GRAB")
 data.table::fread(SparseGRMFile)
 ```
 

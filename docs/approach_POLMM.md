@@ -36,45 +36,41 @@ The following example demonstrates the usage of POLMM approaches.
 
 ```r
 library(GRAB)
-library(dplyr)
 PhenoFile = system.file("extdata", "simuPHENO.txt", package = "GRAB")
 PhenoData = data.table::fread(PhenoFile, header = TRUE)
-PhenoData = PhenoData %>% mutate(OrdinalPheno = factor(OrdinalPheno, 
-                                                       levels = c(0, 1, 2)))
+PhenoData$OrdinalPheno <- factor(PhenoData$OrdinalPheno, levels = c(0, 1, 2))
 ```
 
 ### Step 1(a): If dense GRM is used in model fitting, `GenoFile` is required
 
 ```r
 GenoFile = system.file("extdata", "simuPLINK.bed", package = "GRAB")
-obj.POLMM = GRAB.NullModel(factor(OrdinalPheno) ~ AGE + GENDER,
-                           data = PhenoData, 
-                           subjData = PhenoData$IID, 
-                           method = "POLMM", 
-                           traitType = "ordinal",
-                           GenoFile = GenoFile,
-                           control = list(showInfo = FALSE, 
-                                          LOCO = FALSE, 
-                                          tolTau = 0.2, 
-                                          tolBeta = 0.1))
+obj.POLMM = GRAB.NullModel(
+  factor(OrdinalPheno) ~ AGE + GENDER,
+  data = PhenoData, 
+  subjData = PhenoData$IID, 
+  method = "POLMM", 
+  traitType = "ordinal",
+  GenoFile = GenoFile,
+  control = list(showInfo = FALSE, LOCO = FALSE, tolTau = 0.2, tolBeta = 0.1)
+)
 ```
 
 ### Step 1(b): If sparse GRM is used in model fitting, `SparseGRMFile` is required
 
 ```r
-SparseGRMFile =  system.file("SparseGRM", "SparseGRM.txt", package = "GRAB")
+SparseGRMFile =  system.file("extdata", "SparseGRM.txt", package = "GRAB")
 GenoFile = system.file("extdata", "simuPLINK.bed", package = "GRAB")
-obj.POLMM = GRAB.NullModel(formula = OrdinalPheno ~ AGE + GENDER,
-                           data = PhenoData, 
-                           subjData = PhenoData$IID, 
-                           method = "POLMM", 
-                           traitType = "ordinal",
-                           GenoFile = GenoFile,
-                           SparseGRMFile =  SparseGRMFile,
-                           control = list(showInfo = FALSE, 
-                                          LOCO = FALSE, 
-                                          tolTau = 0.2, 
-                                          tolBeta = 0.1))
+obj.POLMM = GRAB.NullModel(
+  formula = OrdinalPheno ~ AGE + GENDER,
+  data = PhenoData, 
+  subjData = PhenoData$IID, 
+  method = "POLMM", 
+  traitType = "ordinal",
+  GenoFile = GenoFile,
+  SparseGRMFile =  SparseGRMFile,
+  control = list(showInfo = FALSE, LOCO = FALSE, tolTau = 0.2, tolBeta = 0.1)
+)
 
 OutputDir = tempdir()
 objPOLMMFile = file.path(OutputDir, "objPOLMMFile.RData")                                      
@@ -84,44 +80,40 @@ save(obj.POLMM, file = objPOLMMFile)
 ### Step 2(a): Single-variant tests using POLMM
 
 ```r
-objPOLMMFile = system.file("results", "objPOLMMFile.RData", package = "GRAB")  
-load(objPOLMMFile)   # read in an R object of "obj.POLMM"
+# Load a precomputed example object to perform step 2 without repeating step 1
+objPOLMMFile = system.file("extdata", "objPOLMMnull.RData", package = "GRAB") 
+load(objPOLMMFile)
 
 GenoFile = system.file("extdata", "simuPLINK.bed", package = "GRAB")
 OutputDir = tempdir()
 OutputFile = file.path(OutputDir, "simuMarkerOutput.txt")
-GRAB.Marker(obj.POLMM, GenoFile = GenoFile,
-            OutputFile = OutputFile)
+GRAB.Marker(obj.POLMM, GenoFile = GenoFile, OutputFile = OutputFile)
 
-results = data.table::fread(OutputFile)
-hist(results$Pvalue)
+data.table::fread(OutputFile)
 ```
 
 ### Step 2(b): Set-based tests using POLMM-GENE
 
 ```r
-objPOLMMFile = system.file("results", "objPOLMMFile.RData", package = "GRAB")  
+objPOLMMFile = system.file("extdata", "objPOLMMnull.RData", package = "GRAB")  
 load(objPOLMMFile)   # read in an R object of "obj.POLMM"
 
 GenoFile = system.file("extdata", "simuPLINK_RV.bed", package = "GRAB")
 OutputDir = tempdir()
 OutputFile = file.path(OutputDir, "simuRegionOutput.txt")
 GroupFile = system.file("extdata", "simuPLINK_RV.group", package = "GRAB")
-SparseGRMFile = system.file("SparseGRM", "SparseGRM.txt", package = "GRAB")
+SparseGRMFile = system.file("extdata", "SparseGRM.txt", package = "GRAB")
 
-## make sure the output files does not exist at first
-file.remove(OutputFile)
-file.remove(paste0(OutputFile, ".markerInfo"))
-file.remove(paste0(OutputFile, ".index"))
-
-GRAB.Region(objNull = obj.POLMM,
-            GenoFile = GenoFile,
-            GenoFileIndex = NULL,
-            OutputFile = OutputFile,
-            OutputFileIndex = NULL,
-            GroupFile = GroupFile,
-            SparseGRMFile = SparseGRMFile,
-            MaxMAFVec = "0.01,0.005")
+GRAB.Region(
+  objNull = obj.POLMM,
+  GenoFile = GenoFile,
+  GenoFileIndex = NULL,
+  OutputFile = OutputFile,
+  OutputFileIndex = NULL,
+  GroupFile = GroupFile,
+  SparseGRMFile = SparseGRMFile,
+  MaxMAFVec = "0.01,0.005"
+)
 
 data.table::fread(OutputFile)
 ```

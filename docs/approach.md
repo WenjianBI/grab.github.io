@@ -13,58 +13,37 @@ The **GRAB** package provides a generic framework to analyze a wide variety of p
 
 ## Quick Start-up Examples
 
-The following example demonstrates how to use POLMM and POLMM-GENE to analyze ordinal categorical traits.
+Here is a quick tutorial for GWAS of a time-to-event trait using SPAmix.
+
+### Step 1: fit a null model
 
 ```r
 library(GRAB)
-library(dplyr)
+PhenoFile <- system.file("extdata", "simuPHENO.txt", package = "GRAB")
+PhenoData <- data.table::fread(PhenoFile, header = TRUE)
 
-PhenoFile = system.file("extdata", "simuPHENO.txt", package = "GRAB")
-PhenoData = data.table::fread(PhenoFile, header = T)
-PhenoData = PhenoData %>% mutate(OrdinalPheno = factor(OrdinalPheno, 
-                                                       levels = c(0, 1, 2)))
+obj.SPAmix <- GRAB.NullModel(
+  survival::Surv(SurvTime, SurvEvent) ~ AGE + GENDER + PC1 + PC2,
+  data = PhenoData,
+  subjData = IID,
+  method = "SPAmix",
+  traitType = "time-to-event",
+  control = list(PC_columns = "PC1,PC2")
+)
+```
 
-# Step 1: fit a null model
-SparseGRMFile = system.file("SparseGRM", "SparseGRM.txt", package = "GRAB")
-GenoFile = system.file("extdata", "simuPLINK.bed", package = "GRAB")
-obj.POLMM = GRAB.NullModel(formula = OrdinalPheno ~ AGE + GENDER,
-                           data = PhenoData, 
-                           subjData = PhenoData$IID, 
-                           method = "POLMM", 
-                           traitType = "ordinal",
-                           GenoFile = GenoFile,
-                           SparseGRMFile =  SparseGRMFile,
-                           control = list(showInfo = FALSE, 
-                                          LOCO = FALSE, 
-                                          tolTau = 0.2, 
-                                          tolBeta = 0.1))
+### Step 2: conduct score test
 
-# Step 2(a): conduct a marker-level association study
-GenoFile = system.file("extdata", "simuPLINK.bed", package = "GRAB")
-OutputDir = tempdir()
-OutputFile = file.path(OutputDir, "simuMarkerOutput.txt")
-GRAB.Marker(obj.POLMM, GenoFile = GenoFile,
-            OutputFile = OutputFile)
+```r
+GenoFile <- system.file("extdata", "simuPLINK.bed", package = "GRAB")
+OutputFile <- file.path(tempdir(), "Results_SPAmix.txt")
 
-results = data.table::fread(OutputFile)
-hist(results$Pvalue)
-
-# Step 2(b): conduct a set-based association study
-GenoFile = system.file("extdata", "simuPLINK_RV.bed", package = "GRAB")
-OutputDir = tempdir()
-OutputFile = file.path(OutputDir, "simuRegionOutput.txt")
-GroupFile = system.file("extdata", "simuPLINK_RV.group", package = "GRAB")
-SparseGRMFile = system.file("SparseGRM", "SparseGRM.txt", package = "GRAB")
-
-GRAB.Region(objNull = obj.POLMM,
-            GenoFile = GenoFile,
-            GenoFileIndex = NULL,
-            OutputFile = OutputFile,
-            OutputFileIndex = NULL,
-            GroupFile = GroupFile,
-            SparseGRMFile = SparseGRMFile,
-            MaxMAFVec = "0.01,0.005")
-
+GRAB.Marker(
+  objNull = obj.SPAmix,
+  GenoFile = GenoFile,
+  OutputFile = OutputFile,
+  control = list(outputColumns = "zScore")
+)
 data.table::fread(OutputFile)
 ```
 

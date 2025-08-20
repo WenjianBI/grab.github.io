@@ -30,7 +30,7 @@ PLINK binary files with high-quality genotyped variants are required to make a s
 - `gcta64File` sets the path to GCTA executable file, which is also required.
 - The GRM calculation is split to `nPartsGRM` parts for parallel computation.
 - For UK Biobank data analysis with ~ 500K samples, we recommend setting nPartsGRM = 250 and using multiple CPU cores in High Performance Cluster.
-- If not specified, the temporary files are in `system.file("SparseGRM", "temp", package = "GRAB"))`. Users can set `tempDir` to change it.
+- If not specified, the temporary files are in `tempdir()`. Users can set `tempDir` to change it.
 - If the sample size > 100K, then the temporary files might need a large amount of space.
 - Other arguments includes
   - `subjData`: a character vector to specify subject IDs to retain (i.e. IID). Default is NULL, i.e. all subjects are retained in sparse GRM.
@@ -45,12 +45,13 @@ library(GRAB)
 GenoFile = system.file("extdata", "simuPLINK.bed", package = "GRAB")
 PlinkPrefix = tools::file_path_sans_ext(GenoFile)   # remove file extension
 nPartsGRM = 2;
-for(partParallel in 1:nPartsGRM)
-{
-   getTempFilesFullGRM(PlinkPrefix, 
-                       nPartsGRM = nPartsGRM, 
-                       partParallel = partParallel,
-                       gcta64File = "/path/to/gcta64")
+for(partParallel in 1:nPartsGRM) {
+  getTempFilesFullGRM(
+    PlinkPrefix, 
+    nPartsGRM = nPartsGRM, 
+    partParallel = partParallel,
+    gcta64File = "/path/to/gcta64"
+  )
 }
 ```
 
@@ -63,7 +64,7 @@ for(partParallel in 1:nPartsGRM)
 Example:
 
 ```r
-SparseGRMFile = system.file("SparseGRM", "SparseGRM.txt", package = "GRAB")
+SparseGRMFile = system.file("extdata", "SparseGRM.txt", package = "GRAB")
 getSparseGRM(PlinkPrefix, 
              nPartsGRM = nPartsGRM, 
              SparseGRMFile = SparseGRMFile,
@@ -75,7 +76,7 @@ getSparseGRM(PlinkPrefix,
 The below gives more details about the `SparseGRMFile`
 
 ```r
-SparseGRMFile = system.file("SparseGRM", "SparseGRM.txt", package = "GRAB")
+SparseGRMFile = system.file("extdata", "SparseGRM.txt", package = "GRAB")
 SparseGRM = data.table::fread(SparseGRMFile)
 SparseGRM
 #            ID1      ID2     Value
