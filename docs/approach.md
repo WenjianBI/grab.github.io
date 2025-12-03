@@ -7,67 +7,102 @@ has_children: true
 has_toc: true
 ---
 
-# Genome-wide Association Studies
+# GWAS Framework
 
-The **GRAB** package provides a generic framework to analyze a wide variety of phenotypes.
+GRAB provides a unified two-step framework for GWAS in large-scale biobanks. The framework supports multiple statistical methods designed for different trait types and sample and population structures.
 
-## Quick Start-up Examples
+## Two-Step Analysis Framework
 
-Here is a quick tutorial for GWAS of a time-to-event trait using SPAmix.
+### Step 1: Fit Null Model
 
-### Step 1: fit a null model
+The first step fits a null model using the function `GRAB.NullModel`. This step:
+
+- Fits a null model with only covariates
+- Estimates model parameters needed for step two
+- Performs once per phenotype
+
+**Basic Syntax:**
 
 ```r
-library(GRAB)
-PhenoFile <- system.file("extdata", "simuPHENO.txt", package = "GRAB")
-PhenoData <- data.table::fread(PhenoFile, header = TRUE)
-
-obj.SPAmix <- GRAB.NullModel(
-  survival::Surv(SurvTime, SurvEvent) ~ AGE + GENDER + PC1 + PC2,
-  data = PhenoData,
-  subjData = IID,
-  method = "SPAmix",
-  traitType = "time-to-event",
-  control = list(PC_columns = "PC1,PC2")
+obj.null <- GRAB.NullModel(
+  formula,                # Phenotype ~ Covariates (without intercept)
+  data = phenoData,       # Data frame containing variables in the formula
+  subjIDcol = "IID",      # Subject ID column name
+  method = "METHOD",      # method name ("POLMM", "SPACox", "SPAmix", or "WtCoxG")
+  traitType = "TYPE",     # trait type ("ordinal", "time-to-event", or "Residual")
+  GenoFile = "geno.bed",  # Path to PLINK or BGEN genotype file
+  SparseGRMFile = "sparseGRM.txt", # Path to a sparse GRM file.
+  control = list(),       # List of additional, less commonly used parameters
+  ...                     # Additional method-specific parameters.
 )
 ```
 
-### Step 2: conduct score test
+**Notes:**
+
+- `obj.null` contains the data required for step 2.
+- Refer to `?GRAB.NullModel` for detailed parameter instructions.
+- See [getSparseGRM](GRM.md) for details on generating a sparse GRM.
+
+### Step 2: Association Testing
+
+The second step performs association tests using the object from step 1 and genotype data:
+
+#### Marker-Level Analysis
+
+- Single-variant association tests
+- Outputs p-values
+- Outputs related statistics and marker info
+
+**Basic Syntax:**
 
 ```r
-GenoFile <- system.file("extdata", "simuPLINK.bed", package = "GRAB")
-OutputFile <- file.path(tempdir(), "Results_SPAmix.txt")
-
+# Marker-level testing
 GRAB.Marker(
-  objNull = obj.SPAmix,
-  GenoFile = GenoFile,
-  OutputFile = OutputFile,
-  control = list(outputColumns = "zScore")
+  objNull = obj.null,         # Null model object from Step 1
+  GenoFile = "geno.bed",      # Path to PLINK or BGEN genotype file
+  OutputFile = "result.txt"   # Output file path
 )
-data.table::fread(OutputFile)
 ```
 
-## Step 1: Choose `traitType` and `method`
+**Notes:**
 
-Arguments `method` and `traitType` specify the type of phenotype data and the analysis approach. Currently, `GRAB.NullModel()` supports the following combinations:
+- The function returns `NULL` invisibly.
+- Results are written to `OutputFile`.
+- Refer to `?GRAB.Marker` for detailed parameter instructions.
 
-| method                | traitType        | Related subjects | Other features                                                         |
-|:----------------------|:-----------------|:-----------------|:-----------------------------------------------------------------------|
-| `POLMM`, `POLMM-GENE` | `ordinal`        | Yes              | POLMM-GENE is a variant-set-based test                                 |
-| `SPACox`, `SPAmix`    | `time-to-event`  | No               | SPAmix is designed for admixed population using individual-specific AF |
-| `WtCoxG`              | `time-to-event`  | Yes              | WtCoxG boosts power using reference population AF                      |
+#### Region-Level Analysis
 
-## Step 2: Choose Dense GRM or Sparse GRM
+- Variant-set association tests
+- Outputs p-values of SKAT, Burden, and SKAT-O tests
+- Outputs p-values of single variants
+- Outputs related statistics and marker info
 
-Both dense GRM and sparse GRM are supported in the `GRAB` package to adjust for family relatedness, which can prevent inflated type I error rates.
+**Basic Syntax:**
 
-| GRM Type   | Advantages     | Disadvantages   | Required arguments |
-|:----------:|:--------------:|:---------------:|:------------------:|
-| Dense GRM  | More powerful  | Slow            | `GenoFile`         |
-| Sparse GRM | Fast           | Less powerful   | `SparseGRMFile`    |
+```r
+GRAB.Region(
+  objNull = obj.null,              # Null model object from Step 1
+  GenoFile = "geno_rv.bed",        # Genotype file with rare variants
+  OutputFile = "result.txt",       # Main result file
+  GroupFile = "group.txt",         # File of gene/region definitions
+  SparseGRMFile = "sparseGRM.txt", # Sparse GRM file
+  MaxMAFVec = "0.01,0.005",        # MAF cutoffs
+  annoVec = "lof,missense"         # Annotation categories
+)
+```
 
-**NOTE:** Extensive simulation results suggest that for binary and ordinal categorical data analysis, dense and sparse GRM perform similarly in terms of both type I error rates and statistical power.
+The function returns `NULL` invisibly. Results are saved to four files, including `OutputFile` and related result files.
 
-## Note About the `control` Argument
+Refer to `?GRAB.Region` for detailed parameter instructions.
 
-The `control` argument specifies a list of parameters for controlling the fitting and association testing process.
+## Supported Methods
+
+GRAB supports the following statistical methods designed for different scenarios:
+
+| Method                                   | Trait Type                  | Analysis Level      | Sample Structure | Population Structure | Key Feature                              |
+|-------------------------------------------|-----------------------------|---------------------|------------------|---------------------|------------------------------------------|
+| [POLMM](approach_POLMM.md)                | Ordinal categorical         | Marker, Region      | Related          | Homogeneous         | Proportional odds logistic mixed model   |
+| [SPACox](approach_Residual.md)            | Any (primarily time-to-event)| Marker             | Unrelated        | Homogeneous         | Empirical distribution of the score statistic |
+| [SPAmix](approach_Residual.md)            | Any                         | Marker              | Unrelated        | Admixed             | Individual-specific allele frequencies   |
+| [SPAGRM](https://hexupku.github.io/SPAGRM.github.io/) | Any                  | Marker              | Related          | Homogeneous         | Joint distribution of genotypes          |
+| [WtCoxG](approach_WtCoxG.md)              | Time-to-event               | Marker              | Related          | Homogeneous         | Reference population allele frequencies  |

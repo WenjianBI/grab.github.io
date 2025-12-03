@@ -6,78 +6,87 @@ description: "Main page for GRAB package."
 permalink: /
 ---
 
-## Main Features
 
-`GRAB` is an R package for Genome-wide Robust Analysis designed for biobank data.
-The main features of the package are as follows:
+# Overview
 
-- Supports multiple complex traits including:
-  - quantitative traits
-  - binary traits
-  - time-to-event traits
-  - ordinal categorical traits
-  - longitudinal traits
-- Performs single-variant and set-based association tests
-- Accounts for sample relatedness using Genetic Relationship Matrix **(GRM)**
-- Calibrates p-values using normal distribution approximation and Saddlepoint approximation **(SPA)**, which:
-  - are computationally efficient for large datasets (e.g., UK Biobank)
-  - can handle unbalanced phenotypic distributions (e.g., case-control imbalance in binary traits)
-  - are robust for both common and rare variants
+The **GRAB** (**G**enome-wide **R**obust **A**nalysis methods designed for **B**iobank data) package is primarily designed to perform genome-wide association studies (GWAS) for both single-variant and set-based analyses, accounting for sample relatedness and population structure. It supports multiple trait types ([GWAS framework](approach.md)), including:
 
-For set-based association tests, the `GRAB` package:
+- Ordinal categorical traits
+- Time-to-event traits
+- Any trait: using residuals of a fitted null model
 
-- performs Burden test, SKAT, and SKAT-O
-- allows tests on multiple minor allele frequency cutoffs and functional annotations
-- allows specification of weights for single variants in set-based tests
-- performs conditional analysis to identify associations independent of nearby GWAS signals
+Additionally, the package can be used to:
 
-## Supported Approaches
+- [Simulate genotype](simulation_genotype.md) and [phenotype](simulation_phenotype.md) data
+- [Calculate sparse GRM](GRM.md)
+- [Read genotype data](read_genotype.md) from PLINK or BGEN files
 
-### POLMM / POLMM-GENE
+# Installation
 
-- Supports ordinal categorical traits
-- Single-variant / set-based tests
-- Can account for sample relatedness
-- Reference
-  - Wenjian Bi, Wei Zhou, Rounak Dey, Bhramar Mukherjee, Joshua N. Sampson, and Seunggeun Lee. **Efficient mixed model approach for large-scale genome-wide association studies of ordinal categorical phenotypes.** *The American Journal of Human Genetics* 108, no. 5 (2021): 825-839.
-  - Wenjian Bi, Wei Zhou, Peipei Zhang, Yaoyao Sun, Weihua Yue, and Seunggeun Lee. **Scalable mixed model approaches for set-based association studies on large-scale categorical data analysis and its application to 450k exome sequencing data in UK Biobank.** *The American Journal of Human Genetics* 110, no. 5 (2023): 762-773.
+![Linux](https://img.shields.io/badge/Linux-000?logo=linux&logoColor=white)
+![Windows](https://img.shields.io/badge/Windows-0078D6?logo=windows&logoColor=white)
+![macOS](https://img.shields.io/badge/macOS-000?logo=apple&logoColor=white)
 
-### SPACox
+GRAB is an R package, with part of its code written in C++ for improved performance. GRAB can be installed on Linux, Windows, or macOS via CRAN, Conda, or from source code.
 
-- Supports (but not limited to) time-to-event traits
-- Supports model residuals (whose sum is zero) after fitting a null model to any type of trait
-- Single-variant tests
-- Cannot account for sample relatedness
-- Reference
-  - Wenjian Bi, Lars G. Fritsche, Bhramar Mukherjee, Sehee Kim, and Seunggeun Lee (2020). **A fast and accurate method for genome-wide time-to-event data analysis and its application to UK Biobank.** *The American Journal of Human Genetics* 107, no. 2: 222-233.
+## Install via CRAN
 
-### SPAmix
+[![CRAN Status](https://www.r-pkg.org/badges/version/GRAB)](https://CRAN.R-project.org/package=GRAB)
+[![CRAN Downloads](https://cranlogs.r-pkg.org/badges/grand-total/GRAB)](https://CRAN.R-project.org/package=GRAB)
 
-- Supports (but not limited to) time-to-event traits
-- Supports model residuals (whose sum is zero) after fitting a null model to any type of trait
-- Can support admixed populations or multiple populations
-- Single-variant tests
-- Cannot account for sample relatedness
-- Reference
-  - Yuzhuo Ma, He Xu, Ying Li, Hyesung Kim, Lin-lin Xu, Lin Miao, Peng Xu, Fengbiao Mao, Xu-jie Zhou, Wei Zhou, Seunggeun Lee, Ji-Feng Zhang, Peipei Zhang, Wenjian Bi (2025). **A scalable, accurate, and universal analysis framework using individual-specific allele frequency for large-scale genetic association studies in an admixed population**. *Genome Biology* in press
+Install GRAB from CRAN in your R console:
 
-### SPAGRM
+```r
+install.packages("GRAB", dependencies = TRUE)
+```
 
-- Supports (but not limited to) time-to-event traits
-- Supports model residuals (whose sum is zero) after fitting a null model to any type of trait
-- Single-variant tests
-- Can account for sample relatedness
-- Reference
-  - He Xu, Yuzhuo Ma, Lin-lin Xu, Yin Li, Yufei Liu, Ying Li, Xu-jie Zhou, Wei Zhou, Seunggeun Lee, Peipei Zhang, Weihua Yue and Wenjian Bi (2025). **SPA(GRM): effectively controlling for sample relatedness in large-scale genome-wide association studies of longitudinal traits**. *Nature Communications* 16(1): 1413.
+## Install via Conda
 
-### WtCoxG
+[![Conda-Forge](https://img.shields.io/conda/vn/conda-forge/r-grab.svg)](https://anaconda.org/conda-forge/r-grab)
+[![Anaconda-Server Badge](https://anaconda.org/conda-forge/r-grab/badges/downloads.svg)](https://anaconda.org/conda-forge/r-grab)
 
-- Supports time-to-event traits
-- Single-variant tests
-- Uses external allele frequencies to improve statistical power
-- Can account for sample relatedness
-- Reference
-  - Ying Li, Yuzhuo Ma, He Xu, Yaoyao Sun, Min Zhu, Weihua Yue, Wei Zhou and Wenjian Bi (2025). **Applying weighted Cox regression to boost powers for genome-wide association studies of time-to-event phenotypes**. *Nature Computational Science* in press.
+Install GRAB in a new Conda environment named `grab_env` from the `conda-forge` channel:
+
+```sh
+conda create -n grab_env -c conda-forge r-grab r-skat r-dbplyr r-tidyr r-r.utils
+```
+
+## Install from source code
+
+[![GitHub main](https://img.shields.io/badge/GitHub-main-black?logo=github)](https://github.com/GeneticAnalysisinBiobanks/GRAB)
+[![License: GPL v2+](https://img.shields.io/badge/License-GPL%20v2%2B-blue.svg)](https://www.gnu.org/licenses/old-licenses/gpl-2.0.html)
+
+First, create an environment for GRAB using Conda:
+
+```sh
+conda create --name grab_env --channel conda-forge \
+  zlib r-bh r-rcpp r-rcpparmadillo r-rcppparallel r-data.table r-dplyr r-lme4 r-mvtnorm \
+  r-ordinal r-survival r-rsqlite r-skat r-remotes r-dbplyr r-igraph r-r.utils
+```
+
+Then, activate the environment and install GRAB:
+
+```sh
+conda activate grab_env
+R -e "remotes::install_github('GeneticAnalysisinBiobanks/GRAB', upgrade='never')"
+```
+
+## Install GRAB with Docker
+
+Build a Docker image for GRAB named `grab_img` using the following command:
+
+```sh
+docker build -t grab_img - <<EOF
+FROM condaforge/miniforge3
+RUN conda install r-grab r-skat r-dbplyr r-tidyr r-r.utils
+EOF
+```
+
+Then, verify that GRAB can be loaded properly in a container:
+
+```sh
+docker run grab_img R -e "library(GRAB); message('GRAB loaded successfully')"
+```
 
 ## License
 
@@ -85,4 +94,4 @@ For set-based association tests, the `GRAB` package:
 
 ## Contact
 
-If you have any questions about the `GRAB` package, please contact [wenjianb@pku.edu.cn](mailto:wenjianb@pku.edu.cn)
+If you have any questions about GRAB, please contact [wenjianb@pku.edu.cn](mailto:wenjianb@pku.edu.cn).

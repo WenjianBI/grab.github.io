@@ -7,6 +7,8 @@ has_children: false
 has_toc: false
 ---
 
+# Read Genotypes
+
 The `GRAB` package gives function `GRAB.ReadGeno` to read in genotype data from `PLINK` and `BGEN` files.
 
 ## Quick Start-up Guide
