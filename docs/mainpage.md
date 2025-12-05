@@ -48,44 +48,26 @@ install.packages("GRAB", dependencies = TRUE)
 Install GRAB in a new Conda environment named `grab_env` from the `conda-forge` channel:
 
 ```sh
-conda create -n grab_env -c conda-forge r-grab r-skat r-dbplyr r-tidyr r-r.utils
+conda create -n grab_env -c conda-forge r-grab r-skat r-dbplyr r-tidyr
 ```
 
-## Install from source code
-
-[![GitHub main](https://img.shields.io/badge/GitHub-main-black?logo=github)](https://github.com/GeneticAnalysisinBiobanks/GRAB)
-[![License: GPL v2+](https://img.shields.io/badge/License-GPL%20v2%2B-blue.svg)](https://www.gnu.org/licenses/old-licenses/gpl-2.0.html)
-
-First, create an environment for GRAB using Conda:
-
-```sh
-conda create --name grab_env --channel conda-forge \
-  zlib r-bh r-rcpp r-rcpparmadillo r-rcppparallel r-data.table r-dplyr r-lme4 r-mvtnorm \
-  r-ordinal r-survival r-rsqlite r-skat r-remotes r-dbplyr r-igraph r-r.utils
-```
-
-Then, activate the environment and install GRAB:
-
-```sh
-conda activate grab_env
-R -e "remotes::install_github('GeneticAnalysisinBiobanks/GRAB', upgrade='never')"
-```
-
-## Install GRAB with Docker
+## Build a Docker image
 
 Build a Docker image for GRAB named `grab_img` using the following command:
 
 ```sh
 docker build -t grab_img - <<EOF
 FROM condaforge/miniforge3
-RUN conda install r-grab r-skat r-dbplyr r-tidyr r-r.utils
+RUN conda install r-grab r-skat r-dbplyr r-tidyr
 EOF
 ```
 
-Then, verify that GRAB can be loaded properly in a container:
+## Pull a Prebuilt Docker Image
+
+A prebuilt Docker image for GRAB is available and can be pulled directly from Docker Hub with the following command:
 
 ```sh
-docker run grab_img R -e "library(GRAB); message('GRAB loaded successfully')"
+docker pull geneticanalysisinbiobanks/grab:v0.2.3
 ```
 
 ## License

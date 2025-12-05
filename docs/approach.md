@@ -9,43 +9,58 @@ has_toc: true
 
 # GWAS Framework
 
-GRAB provides a unified two-step framework for GWAS in large-scale biobanks. The framework supports multiple statistical methods designed for different trait types and sample and population structures.
+All GWAS methods in GRAB are implemented using the unified two-step analysis framework.
 
 ## Two-Step Analysis Framework
 
-### Step 1: Fit Null Model
+### Step 1: Model Fitting and Preprocessing
 
-The first step fits a null model using the function `GRAB.NullModel`. This step:
+The first step prepares all necessary components before conducting association tests on each marker or region. This step is performed once per phenotype for all markers or regions and includes:
 
-- Fits a null model with only covariates
-- Estimates model parameters needed for step two
-- Performs once per phenotype
+- Fitting a null model with covariates only
+- Completing other tasks needed only once for all markers or regions
 
 **Basic Syntax:**
 
 ```r
 obj.null <- GRAB.NullModel(
-  formula,                # Phenotype ~ Covariates (without intercept)
-  data = phenoData,       # Data frame containing variables in the formula
-  subjIDcol = "IID",      # Subject ID column name
-  method = "METHOD",      # method name ("POLMM", "SPACox", "SPAmix", or "WtCoxG")
-  traitType = "TYPE",     # trait type ("ordinal", "time-to-event", or "Residual")
-  GenoFile = "geno.bed",  # Path to PLINK or BGEN genotype file
-  SparseGRMFile = "sparseGRM.txt", # Path to a sparse GRM file.
-  control = list(),       # List of additional, less commonly used parameters
-  ...                     # Additional method-specific parameters.
+  formula,                   # Phenotype ~ Covariates (without intercept)
+  data = phenoData,          # Data frame containing variables in the formula
+  subjIDcol = "IID",         # Subject ID column name
+  method = "METHOD",         # method name ("POLMM", "SPACox", "SPAmix", or "WtCoxG")
+  traitType = "TYPE",        # trait type ("ordinal", "time-to-event", or "Residual")
+  SparseGRMFile = "GRM.txt", # Path to a sparse GRM file (optional)
+  ...                        # Additional method-specific parameters.
 )
 ```
 
 **Notes:**
 
-- `obj.null` contains the data required for step 2.
+- `obj.null` contains the data structure for step 2.
 - Refer to `?GRAB.NullModel` for detailed parameter instructions.
-- See [getSparseGRM](GRM.md) for details on generating a sparse GRM.
+
+### `SparseGRMFile` Format
+
+A sparse GRM file must be whitespace-delimited with three columns in the following order:
+
+```
+ID1      ID2     Value
+f1_1     f1_2    0.1550
+f1_1     f1_3    0.2272
+f1_2     f1_3    0.1192
+```
+
+**Format specifications:**
+
+- **Column 1:** Subject ID 1
+- **Column 2:** Subject ID 2
+- **Column 3:** Genetic correlation between the two subjects
+ 
+See [getSparseGRM](GRM.md) for details on generating a sparse GRM.
 
 ### Step 2: Association Testing
 
-The second step performs association tests using the object from step 1 and genotype data:
+The second step uses `obj.null` and genotype data to perform association tests for each marker or region.
 
 #### Marker-Level Analysis
 
@@ -56,11 +71,11 @@ The second step performs association tests using the object from step 1 and geno
 **Basic Syntax:**
 
 ```r
-# Marker-level testing
 GRAB.Marker(
-  objNull = obj.null,         # Null model object from Step 1
-  GenoFile = "geno.bed",      # Path to PLINK or BGEN genotype file
-  OutputFile = "result.txt"   # Output file path
+  objNull = obj.null,        # Null model object from Step 1
+  GenoFile = "geno.bed",     # Path to PLINK or BGEN genotype file
+  OutputFile = "result.txt", # Output file path
+  control = list()           # List of additional parameters (optional)
 )
 ```
 
@@ -81,19 +96,38 @@ GRAB.Marker(
 
 ```r
 GRAB.Region(
-  objNull = obj.null,              # Null model object from Step 1
-  GenoFile = "geno_rv.bed",        # Genotype file with rare variants
-  OutputFile = "result.txt",       # Main result file
-  GroupFile = "group.txt",         # File of gene/region definitions
-  SparseGRMFile = "sparseGRM.txt", # Sparse GRM file
-  MaxMAFVec = "0.01,0.005",        # MAF cutoffs
-  annoVec = "lof,missense"         # Annotation categories
+  objNull = obj.null,          # Null model object from Step 1
+  GenoFile = "geno.bed",       # Path to PLINK or BGEN genotype file
+  OutputFile = "result.txt",   # Main result file
+  GroupFile = "group.txt"      # File of gene/region definitions
 )
 ```
 
-The function returns `NULL` invisibly. Results are saved to four files, including `OutputFile` and related result files.
+**Notes:**
 
-Refer to `?GRAB.Region` for detailed parameter instructions.
+- The function returns `NULL` invisibly.
+- Results are saved to four files, including `OutputFile` and related result files.
+- Refer to `?GRAB.Region` for detailed parameter instructions.
+
+### `GroupFile` Format
+
+The group file defines regions and variant annotations (tab-separated):
+
+```
+GENE1    var     rs1001  rs1002    rs1003    rs1004
+GENE1    anno    lof     missense  missense  synonymous
+GENE1    weight  1.5     1.2       1.0       0.8
+GENE2    var     rs2001  rs2002
+GENE2    anno    lof     lof
+```
+
+**Format specifications:**
+
+- Column 1: Region/gene identifier
+- Column 2: Row type (`var`, `anno`, or `weight`)
+- Columns 3+: Marker IDs, annotations, or weights
+- `anno` row: Annotation categories for each variant
+- `weight` row (optional): Custom weights for each variant
 
 ## Supported Methods
 

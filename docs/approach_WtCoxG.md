@@ -21,17 +21,16 @@ WtCoxG is a Cox-based association test method for time-to-event traits that addr
 - Saddlepoint approximation (SPA) provides accurate p-values, especially for rare variants and extreme case-control ratios
 
 **Citation:**
-Li et al. (2025). High-powered, robust, and versatile survival analysis via weighted Cox regression. *Nature Computational Science*. [doi:10.1038/s43588-025-00864-z](https://doi.org/10.1038/s43588-025-00864-z)
+Li *et al.* (2025). High-powered, robust, and versatile survival analysis via weighted Cox regression. *Nature Computational Science*. [doi:10.1038/s43588-025-00864-z](https://doi.org/10.1038/s43588-025-00864-z)
 
 ---
 
-## Step 1: Fit Null Model and Test Batch Effects
+## Step 1: Model Fitting and Preprocessing
 
 Refer to `?GRAB.NullModel` and `?GRAB.WtCoxG` for detailed parameter instructions. A quick example is provided below.
 
 ```r
-# Setup files
-library(GRAB)
+# Load files
 PhenoFile <- system.file("extdata", "simuPHENO.txt", package = "GRAB")
 PhenoData <- data.table::fread(PhenoFile, header = TRUE)
 SparseGRMFile <- system.file("extdata", "SparseGRM.txt", package = "GRAB")
@@ -57,10 +56,11 @@ obj.WtCoxG <- GRAB.NullModel(
 
 - `RefAfFile`: Reference allele frequency file (see format below)
 - `RefPrevalence`: Population disease prevalence (0 < p < 0.5)
+- `obj.WtCoxG` contains the data structure for step 2
 
-### Reference Allele Frequency File Format
+### `RefAfFile` Format
 
-The reference file must be whitespace-delimited and include the following columns:
+The reference allele frequency file must be whitespace-delimited and include the following columns:
 
 - **CHROM**: Chromosome
 - **POS**: Position
@@ -79,7 +79,7 @@ CHROM   POS      ID          REF  ALT  AF_ref   AN_ref
 1       10352    rs555500075  T    A   0.4104   251480
 ```
 
-### Null Object Components
+### `obj.WtCoxG` Components
 
 - `N`: Sample size
 - `subjData`: Subject IDs
@@ -108,7 +108,8 @@ Refer to `?GRAB.Marker` and `?GRAB.WtCoxG` for detailed parameter instructions. 
 ```r
 # Marker-level testing
 GRAB.Marker(obj.WtCoxG, GenoFile, OutputFile)
-# Read results
+
+# View results
 head(data.table::fread(OutputFile))
 ```
 

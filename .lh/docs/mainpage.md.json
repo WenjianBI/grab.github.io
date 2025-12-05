@@ -3,7 +3,7 @@
     "activeCommit": 0,
     "commits": [
         {
-            "activePatchIndex": 4,
+            "activePatchIndex": 12,
             "patches": [
                 {
                     "date": 1764767222339,
@@ -24,6 +24,38 @@
                 {
                     "date": 1764807740265,
                     "content": "Index: \n===================================================================\n--- \n+++ \n@@ -8,19 +8,19 @@\n \n \n # Overview\n \n-The **GRAB** (**G**enome-wide **R**obust **A**nalysis methods designed for **B**iobank data) package is primarily designed to perform genome-wide association studies (GWAS) for both single-variant and set-based analyses, accounting for sample relatedness and population structure. It supports multiple trait types, including:\n+The **GRAB** (**G**enome-wide **R**obust **A**nalysis methods designed for **B**iobank data) package is primarily designed to perform genome-wide association studies (GWAS) for both single-variant and set-based analyses, accounting for sample relatedness and population structure. It supports multiple trait types ([GWAS framework](approach.md)), including:\n \n-- [Ordinal categorical traits](approach_POLMM.md)\n-- [Time-to-event traits](approach_WtCoxG.md)\n-- [Any trait: residuals after fitting a null model](approach_Residual.md)\n+- Ordinal categorical traits\n+- Time-to-event traits\n+- Any trait: using residuals of a fitted null model\n \n Additionally, the package can be used to:\n \n - [Simulate genotype](simulation_genotype.md) and [phenotype](simulation_phenotype.md) data\n - [Calculate sparse GRM](GRM.md)\n-- [Read genotype data from PLINK or BGEN files](read_genotype.md)\n+- [Read genotype data](read_genotype.md) from PLINK or BGEN files\n \n # Installation\n \n ![Linux](https://img.shields.io/badge/Linux-000?logo=linux&logoColor=white)\n"
+                },
+                {
+                    "date": 1764933575889,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -87,8 +87,16 @@\n ```sh\n docker run grab_img R -e \"library(GRAB); message('GRAB loaded successfully')\"\n ```\n \n+## Prebuilt Docker Image\n+\n+A prebuilt Docker image for GRAB is available and can be pulled directly from Docker Hub with the following command:\n+\n+```sh\n+docker pull geneticanalysisinbiobanks/grab:v0.2.3\n+```\n+\n ## License\n \n `GRAB` is distributed under a GPL license.\n \n"
+                },
+                {
+                    "date": 1764937724741,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -50,28 +50,8 @@\n ```sh\n conda create -n grab_env -c conda-forge r-grab r-skat r-dbplyr r-tidyr r-r.utils\n ```\n \n-## Install from source code\n-\n-[![GitHub main](https://img.shields.io/badge/GitHub-main-black?logo=github)](https://github.com/GeneticAnalysisinBiobanks/GRAB)\n-[![License: GPL v2+](https://img.shields.io/badge/License-GPL%20v2%2B-blue.svg)](https://www.gnu.org/licenses/old-licenses/gpl-2.0.html)\n-\n-First, create an environment for GRAB using Conda:\n-\n-```sh\n-conda create --name grab_env --channel conda-forge \\\n-  zlib r-bh r-rcpp r-rcpparmadillo r-rcppparallel r-data.table r-dplyr r-lme4 r-mvtnorm \\\n-  r-ordinal r-survival r-rsqlite r-skat r-remotes r-dbplyr r-igraph r-r.utils\n-```\n-\n-Then, activate the environment and install GRAB:\n-\n-```sh\n-conda activate grab_env\n-R -e \"remotes::install_github('GeneticAnalysisinBiobanks/GRAB', upgrade='never')\"\n-```\n-\n ## Install GRAB with Docker\n \n Build a Docker image for GRAB named `grab_img` using the following command:\n \n@@ -81,14 +61,8 @@\n RUN conda install r-grab r-skat r-dbplyr r-tidyr r-r.utils\n EOF\n ```\n \n-Then, verify that GRAB can be loaded properly in a container:\n-\n-```sh\n-docker run grab_img R -e \"library(GRAB); message('GRAB loaded successfully')\"\n-```\n-\n ## Prebuilt Docker Image\n \n A prebuilt Docker image for GRAB is available and can be pulled directly from Docker Hub with the following command:\n \n"
+                },
+                {
+                    "date": 1764937789667,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -50,9 +50,9 @@\n ```sh\n conda create -n grab_env -c conda-forge r-grab r-skat r-dbplyr r-tidyr r-r.utils\n ```\n \n-## Install GRAB with Docker\n+## Build a Docker image\n \n Build a Docker image for GRAB named `grab_img` using the following command:\n \n ```sh\n@@ -61,9 +61,9 @@\n RUN conda install r-grab r-skat r-dbplyr r-tidyr r-r.utils\n EOF\n ```\n \n-## Prebuilt Docker Image\n+## Pull a Prebuilt Docker Image\n \n A prebuilt Docker image for GRAB is available and can be pulled directly from Docker Hub with the following command:\n \n ```sh\n"
+                },
+                {
+                    "date": 1764937830460,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -66,9 +66,9 @@\n \n A prebuilt Docker image for GRAB is available and can be pulled directly from Docker Hub with the following command:\n \n ```sh\n-docker pull geneticanalysisinbiobanks/grab:v0.2.3\n+docker pull geneticanalysisinbiobanks/grab:latest\n ```\n \n ## License\n \n"
+                },
+                {
+                    "date": 1764937840061,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -66,9 +66,9 @@\n \n A prebuilt Docker image for GRAB is available and can be pulled directly from Docker Hub with the following command:\n \n ```sh\n-docker pull geneticanalysisinbiobanks/grab:latest\n+docker pull geneticanalysisinbiobanks/grab:v0.2.3\n ```\n \n ## License\n \n"
+                },
+                {
+                    "date": 1764937888819,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -47,9 +47,9 @@\n \n Install GRAB in a new Conda environment named `grab_env` from the `conda-forge` channel:\n \n ```sh\n-conda create -n grab_env -c conda-forge r-grab r-skat r-dbplyr r-tidyr r-r.utils\n+conda create -n grab_env -c conda-forge r-grab r-skat r-dbplyr r-tidyr\n ```\n \n ## Build a Docker image\n \n@@ -57,9 +57,9 @@\n \n ```sh\n docker build -t grab_img - <<EOF\n FROM condaforge/miniforge3\n-RUN conda install r-grab r-skat r-dbplyr r-tidyr r-r.utils\n+RUN conda install r-grab r-skat r-dbplyr r-tidyr\n EOF\n ```\n \n ## Pull a Prebuilt Docker Image\n"
+                },
+                {
+                    "date": 1764937950118,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -52,12 +52,12 @@\n ```\n \n ## Build a Docker image\n \n-Build a Docker image for GRAB named `grab_img` using the following command:\n+Build a Docker image for GRAB named `grab` using the following command:\n \n ```sh\n-docker build -t grab_img - <<EOF\n+docker build -t grab - <<EOF\n FROM condaforge/miniforge3\n RUN conda install r-grab r-skat r-dbplyr r-tidyr\n EOF\n ```\n"
+                },
+                {
+                    "date": 1764937970949,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -52,12 +52,12 @@\n ```\n \n ## Build a Docker image\n \n-Build a Docker image for GRAB named `grab` using the following command:\n+Build a Docker image for GRAB named `grab_img` using the following command:\n \n ```sh\n-docker build -t grab - <<EOF\n+docker build -t grab_img - <<EOF\n FROM condaforge/miniforge3\n RUN conda install r-grab r-skat r-dbplyr r-tidyr\n EOF\n ```\n"
                 }
             ],
             "date": 1764767222339,

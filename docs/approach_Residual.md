@@ -24,65 +24,50 @@ where $R_i$ is the residual for subject $i$, and $X_{ij}$ is the value of covari
 
 | Method     | Population Structure | Sample Relatedness | Supported `traitType`       | Modeling Approach                  |
 |------------|---------------------|--------------------|-----------------------------|------------------------------------|
-| **SPACox** | Not                  | Not                 | `Residuals`, `time-to-event`| Residuals random     |
-| **SPAmix** | Modeled                 | Not                 | `Residuals`, `time-to-event`| Genotypes random   |
+| **SPACox** | Not                  | Not                 | `time-to-event`, `Residuals` | Residuals random     |
+| **SPAmix** | Modeled                 | Not                 | `time-to-event`, `Residuals` | Genotypes random   |
 | **SPAGRM** | Not                  | Modeled                | `Residuals`                 | Genotypes random   |
 
 > **Note:**
-Documentation for SPAGRM is available at the [SPAGRM online tutorial](https://hexupku.github.io/SPAGRM.github.io/).
+For time-to-event traits, step 1 of SPACox and SPAmix can be fitted directly. For other trait types, all three methods accept residuals as input.
 
 ---
 
-**Citation:**
-**SPACox**, Bi et al. (2020). Fast and accurate method for genome-wide time-to-event data analysis and its application to UK Biobank. *American Journal of Human Genetics*. [doi:10.1016/j.ajhg.2020.06.003](https://doi.org/10.1016/j.ajhg.2020.06.003)
+**Citations:**
+**SPACox**, Bi *et al.* (2020). Fast and accurate method for genome-wide time-to-event data analysis and its application to UK Biobank. *American Journal of Human Genetics*. [doi:10.1016/j.ajhg.2020.06.003](https://doi.org/10.1016/j.ajhg.2020.06.003)
 
-**SPAmix**, Ma et al. (2025). Sparse estimation of high-dimensional genetic correlation and its application to global biobank meta-analysis. *Genome Biology*. [doi:10.1186/s13059-025-03827-9](https://doi.org/10.1186/s13059-025-03827-9)
+**SPAmix**, Ma *et al.* (2025). Sparse estimation of high-dimensional genetic correlation and its application to global biobank meta-analysis. *Genome Biology*. [doi:10.1186/s13059-025-03827-9](https://doi.org/10.1186/s13059-025-03827-9)
 
-**SPAGRM**, Xu et al. (2025). Scalable and accurate variance component analysis with large sample relatedness. *Nature Communications*. [doi:10.1038/s41467-025-56669-1](https://doi.org/10.1038/s41467-025-56669-1)
+**SPAGRM**, Xu *et al.* (2025). Scalable and accurate variance component analysis with large sample relatedness. *Nature Communications*. [doi:10.1038/s41467-025-56669-1](https://doi.org/10.1038/s41467-025-56669-1)
 
-## Step 1: Fit Null Model (SPACox and SPAmix)
+## SPACox
 
-Refer to `?GRAB.NullModel`, `?GRAB.SPACox`, and `?GRAB.SPAmix` for detailed parameter instructions. A quick example is provided below.
+### Step 1: Model Fitting and Preprocessing
 
-### Option 1: Direct analysis of a time-to-event trait
+Refer to `?GRAB.NullModel` and `?GRAB.SPACox` for detailed parameter instructions. Quick examples are provided below.
 
-If the left side of the `formula` is an `Surv` object, specify `traitType = "time-to-event"`.
+#### Option 1: Direct analysis of a time-to-event trait
+
+If the left side of the `formula` is an `survival::Surv` object, specify `traitType = "time-to-event"`.
 
 ```r
-library(GRAB)
-library(survival)
-
+# Load data
 PhenoFile = system.file("extdata", "simuPHENO.txt", package = "GRAB")
 PhenoData = data.table::fread(PhenoFile, header = T)
 
-# Step 1, Option 1, SPACox
+# Step 1, time-to-event trait, SPACox
 obj.SPACox = GRAB.NullModel(
-  Surv(SurvTime, SurvEvent) ~ AGE + GENDER, 
+  survival::Surv(SurvTime, SurvEvent) ~ AGE + GENDER, 
   data = PhenoData, 
   subjIDcol = "IID", 
   method = "SPACox", 
   traitType = "time-to-event"
 )
-
-# Step 1, Option 1, SPAmix
-obj.SPAmix = GRAB.NullModel(
-  Surv(SurvTime, SurvEvent) ~ AGE + GENDER + PC1 + PC2, 
-  data = PhenoData, 
-  subjIDcol = "IID", 
-  method = "SPAmix", 
-  traitType = "time-to-event", 
-  control = list(PC_columns = "PC1,PC2")
-)
 ```
 
-**SPAmix-specific mandatory control parameter:**  
-`PC_columns`: Comma-separated column names of SNP-derived principal components (e.g., `"PC1,PC2"`).
-
-### Option 2: Analysis from residuals
+#### Option 2: Analysis from residuals
 
 If the left side of the `formula` are residuals, specify `traitType = "Residuals"`.
-
-#### SPACox, residuals of one trait
 
 ```r
 # Step 1, Option 2, SPACox
@@ -102,7 +87,7 @@ obj.SPACox = GRAB.NullModel(
 )
 ```
 
-##### Null Object Components
+##### `obj.SPACox` Components
 
 - `N`: Sample size
 - `mresid`: Martingale residuals
@@ -111,7 +96,67 @@ obj.SPACox = GRAB.NullModel(
 - `yVec`: Event indicator
 - `X.invXX`: Projection matrix for variance
 
-#### SPAmix, multiple traits at once
+### Step 2: Association Testing
+
+Refer to `?GRAB.Marker` and `?GRAB.SPACox` for detailed parameter instructions. A quick example is provided below.
+
+```r
+# Step 2, SPACox
+GenoFile = system.file("extdata", "simuPLINK.bed", package = "GRAB")
+OutputFile = file.path(tempdir(), "Results_SPACox.txt")
+
+# Marker-level testing
+GRAB.Marker(obj.SPACox, GenoFile = GenoFile, OutputFile = OutputFile)
+
+# Read results
+head(data.table::fread(OutputFile))
+```
+
+##### Output Columns
+
+- `Marker`: Variant identifier
+- `Info`: CHR:POS:REF:ALT
+- `AltFreq`: Alternative allele frequency
+- `AltCounts`: Alternative allele count
+- `MissingRate`: Proportion missing
+- `Pvalue`: Association p-value
+- `zScore`: Test statistic
+
+---
+
+## SPAmix
+
+### Step 1: Model Fitting and Preprocessing
+
+Refer to `?GRAB.NullModel` and `?GRAB.SPAmix` for detailed parameter instructions. Quick examples are provided below.
+
+#### Option 1: Direct analysis of a time-to-event trait
+
+If the left side of the `formula` is an `survival::Surv` object, specify `traitType = "time-to-event"`.
+
+`PC_columns` in the control list is required for SPAmix and should be specified as a comma-separated list of SNP-derived principal component column names (e.g., `"PC1,PC2"`).
+
+```r
+# Load data
+PhenoFile = system.file("extdata", "simuPHENO.txt", package = "GRAB")
+PhenoData = data.table::fread(PhenoFile, header = T)
+
+# Step 1, time-to-event trait, SPAmix
+obj.SPAmix = GRAB.NullModel(
+  Surv(SurvTime, SurvEvent) ~ AGE + GENDER + PC1 + PC2, 
+  data = PhenoData, 
+  subjIDcol = "IID", 
+  method = "SPAmix", 
+  traitType = "time-to-event", 
+  control = list(PC_columns = "PC1,PC2")
+)
+```
+
+#### Option 2: Analysis from residuals
+
+If the left side of the `formula` are residuals, specify `traitType = "Residuals"`.
+
+The following example analyzes residuals from two traits simultaneously.
 
 ```r
 # Step 1, Option 2, SPAmix
@@ -138,7 +183,7 @@ obj.SPAmix <- GRAB.NullModel(
 )
 ```
 
-##### Null Object Components
+##### `obj.SPAmix` Components
 
 - `N`: Sample size
 - `resid`: Residual matrix (n × k phenotypes)
@@ -149,37 +194,9 @@ obj.SPAmix <- GRAB.NullModel(
   - `posOutlier`, `posNonOutlier`: Subject indices
   - `residOutlier`, `residNonOutlier`: Stratified residuals
 
----
+### Step 2: Association Testing
 
-## Step 2: Association Testing
-
-Refer to `?GRAB.Marker`, `?GRAB.SPACox`, and `?GRAB.SPAmix` for detailed parameter instructions. A quick example is provided below.
-
-### SPACox
-
-```r
-# Step 2, SPACox
-GenoFile = system.file("extdata", "simuPLINK.bed", package = "GRAB")
-OutputFile = file.path(tempdir(), "Results_SPACox.txt")
-
-# Marker-level testing
-GRAB.Marker(obj.SPACox, GenoFile = GenoFile, OutputFile = OutputFile)
-
-# Read results
-head(data.table::fread(OutputFile))
-```
-
-**Output Columns**
-
-- `Marker`: Variant identifier
-- `Info`: CHR:POS:REF:ALT
-- `AltFreq`: Alternative allele frequency
-- `AltCounts`: Alternative allele count
-- `MissingRate`: Proportion missing
-- `Pvalue`: Association p-value
-- `zScore`: Test statistic
-
-### SPAmix
+Refer to `?GRAB.Marker` and `?GRAB.SPAmix` for detailed parameter instructions. A quick example is provided below.
 
 ```r
 # Step 2, SPAmix
@@ -193,7 +210,7 @@ GRAB.Marker(obj.SPAmix, GenoFile = GenoFile, OutputFile = OutputFile)
 head(data.table::fread(OutputFile))
 ```
 
-**Output Columns**
+##### Output Columns
 
 - `Pheno`: Phenotype identifier (pheno_1, pheno_2, ...)
 - `Marker`: Variant identifier
@@ -203,3 +220,40 @@ head(data.table::fread(OutputFile))
 - `MissingRate`: Proportion missing
 - `Pvalue`: Association p-value
 - `zScore`: Test statistic
+
+---
+
+## SPAGRM
+
+### Step 1: Preprocessing
+
+SPAGRM accepts only residuals. Refer to `?SPAGRM.NullModel` and `?GRAB.SPAGRM` for detailed parameter instructions. Detailed documentation for SPAGRM is available at the [SPAGRM online tutorial](https://hexupku.github.io/SPAGRM.github.io/).
+
+```r
+# Load data
+ResidMatFile <- system.file("extdata", "ResidMat.txt", package = "GRAB")
+SparseGRMFile <- system.file("extdata", "SparseGRM.txt", package = "GRAB")
+PairwiseIBDFile <- system.file("extdata", "PairwiseIBD.txt", package = "GRAB")
+GenoFile <- system.file("extdata", "simuPLINK.bed", package = "GRAB")
+OutputFile <- file.path(tempdir(), "resultSPAGRM.txt")
+
+# Pre-calculate genotype distributions
+obj.SPAGRM <- SPAGRM.NullModel(
+  ResidMatFile = ResidMatFile,
+  SparseGRMFile = SparseGRMFile,
+  PairwiseIBDFile = PairwiseIBDFile,
+  control = list(ControlOutlier = FALSE)
+)
+```
+
+### Step 2: Association Testing
+
+Refer to `?GRAB.Marker` and `?GRAB.SPAGRM` for detailed parameter instructions. A quick example is provided below.
+
+```r
+# Perform association tests
+GRAB.Marker(obj.SPAGRM, GenoFile, OutputFile)
+
+# Read results
+head(data.table::fread(OutputFile))
+```
