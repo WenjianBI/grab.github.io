@@ -1,11 +1,8 @@
 ---
 layout: default
-title: POLMM / POLMM-GENE
-nav_order: 2
-description: "POLMM approaches: ordinal categorical trait analysis."
-parent: Genome-wide association studies
-has_children: false
-has_toc: false
+title: POLMM
+parent: GWAS Methods
+nav_order: 1
 ---
 
 # POLMM
@@ -21,8 +18,9 @@ has_toc: false
 - Scales to biobank-size datasets
 - Support both single-variant analysis and set-based analysis
 
-**Citation:**
-Bi *et al.* (2021). Efficient mixed model approach for large-scale genome-wide association studies of ordinal categorical phenotypes. *American Journal of Human Genetics*. [doi:10.1016/j.ajhg.2021.03.019](https://doi.org/10.1016/j.ajhg.2021.03.019)
+> **Citation:**
+>
+> Bi *et al.* (2021). Efficient mixed model approach for large-scale genome-wide association studies of ordinal categorical phenotypes. *American Journal of Human Genetics*. [doi:10.1016/j.ajhg.2021.03.019](https://doi.org/10.1016/j.ajhg.2021.03.019)
 
 **POLMM-GENE** extends POLMM to perform set-based association tests for rare variants in genomic regions (e.g., genes). It is particularly powerful for exome sequencing data.
 
@@ -33,8 +31,9 @@ Bi *et al.* (2021). Efficient mixed model approach for large-scale genome-wide a
 - Cauchy combination for multiple tests
 - Handles ultra-rare variants (MAC < threshold)
 
-**Citation:**
-Bi *et al.* (2023). Scalable mixed model methods for set-based association studies on large-scale categorical data analysis and its application to exome-sequencing data in UK Biobank. *American Journal of Human Genetics*. [doi:10.1016/j.ajhg.2023.03.010](https://doi.org/10.1016/j.ajhg.2023.03.010)
+> **Citation:**
+>
+> Bi *et al.* (2023). Scalable mixed model methods for set-based association studies on large-scale categorical data analysis and its application to exome-sequencing data in UK Biobank. *American Journal of Human Genetics*. [doi:10.1016/j.ajhg.2023.03.010](https://doi.org/10.1016/j.ajhg.2023.03.010)
 
 ---
 
@@ -104,9 +103,9 @@ GRAB.Marker(obj.POLMM, GenoFile, OutputFile,
 head(data.table::fread(OutputFile))
 ```
 
-### Output Columns
+**Output Columns:**
 
-**Standard columns:**
+Standard columns:
 
 - `Marker`: Variant identifier (rsID or CHR:POS:REF:ALT)
 - `Info`: Variant information (CHR:POS:REF:ALT format)
@@ -118,7 +117,7 @@ head(data.table::fread(OutputFile))
 - `seBeta`: Standard error of beta
 - `zScore`: Z-score from score test
 
-**Additional columns (`ifOutGroup = TRUE`):**
+Additional columns (`ifOutGroup = TRUE`):
 
 - `AltFreqInGroup.1`, `AltFreqInGroup.2`, ...: Allele frequency in each ordinal category
 - `AltCountsInGroup.1`, `AltCountsInGroup.2`, ...: Allele counts in each ordinal category

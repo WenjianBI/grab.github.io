@@ -1,12 +1,10 @@
 ---
 layout: default
-title: Tool Developer 
-nav_order: 10
-description: "Just the Docs is a responsive Jekyll theme with built-in search that is easily customizable and hosted on GitHub Pages."
-has_children: false
+title: Development
+nav_order: 6
 ---
 
-# For analysis tool developer
+# For Analysis Tool Developers
 
 `GRAB` package provides a generic framework of GWAS on a large-scale biobank data. The below gives a brief idea about how to incorporate a new tool into `GRAB` package.
 

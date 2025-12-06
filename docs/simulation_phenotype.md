@@ -1,9 +1,8 @@
 ---
 layout: default
 title: Phenotype Simulation
+parent: Simulation
 nav_order: 2
-description: "Just the Docs is a responsive Jekyll theme with built-in search that is easily customizable and hosted on GitHub Pages."
-parent: Data Simulation
 ---
   
 # Phenotype simulation
@@ -81,7 +80,8 @@ PhenoData = PhenoData %>% mutate(OrdinalPheno = GRAB.SimuPheno(eta, traitType = 
 **D.** time-to-event trait
 
 ```r
-TimeToEventPheno = GRAB.SimuPheno(PhenoData$eta, traitType = "time-to-event", control = list(eventRate = 0.1))
+TimeToEventPheno = GRAB.SimuPheno(PhenoData$eta, traitType = "time-to-event", 
+                                  control = list(eventRate = 0.1))
 PhenoData = cbind(PhenoData, TimeToEventPheno)
 ```
 
@@ -125,4 +125,4 @@ The distribution of simulated phenotypes compared to linear predicators `eta` is
 - binary phenotype: higher `eta`, higher possibility of being cases
 - ordinal categorical phenotype: higher `eta`, higher possibility of being groups with larger number
 
-![Distribution of simulated phenotypes]({{site.baseurl | prepend: site.url}}img/SimuPheno.jpeg)
+![Distribution of simulated phenotypes]({{ '/assets/img/SimuPheno.jpg' | relative_url }})

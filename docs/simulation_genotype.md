@@ -1,9 +1,8 @@
 ---
 layout: default
 title: Genotype Simulation
+parent: Simulation
 nav_order: 1
-description: "Just the Docs is a responsive Jekyll theme with built-in search that is easily customizable and hosted on GitHub Pages."
-parent: Data Simulation
 ---
 
 # Genotype simulation
@@ -58,7 +57,8 @@ dim(GenoMat)
 class(GenoMat)
 # [1] "matrix" "array"
 
-GenoMat[c(1:5,996:1000),1:10]  # Subjects `f1_1` - `f1-10` are from family 1; `Subj-1` - `Subj-500` are unrelated subjects
+# Subjects `f1_1` - `f1-10` are from family 1; `Subj-1` - `Subj-500` are unrelated subjects
+GenoMat[c(1:5,996:1000),1:10]
 #          SNP_1 SNP_2 SNP_3 SNP_4 SNP_5 SNP_6 SNP_7 SNP_8 SNP_9 SNP_10
 # f1_1         0     1     2     2     1     0     0     0     1      1
 # f1_2         1     1     1     0     0     0     0     0     1      1
@@ -70,14 +70,13 @@ GenoMat[c(1:5,996:1000),1:10]  # Subjects `f1_1` - `f1-10` are from family 1; `S
 # Subj-498     0     2     1     1     0     1     1     0     0      0
 # Subj-499     2     0     1     1     1     0     0     0     0      1
 # Subj-500     1     0     0     2     0     0     0     1     0      2
-
 ```
 
 ### Note about FamMode
 
 Currently, we support three `FamMode` including `4-members`, `10-members`, and `20-members` with the family structures as below. If `nFam` is not specified, then genotype were simulated only for unrelated subjects.
 
-![Family structure modes]({{site.baseurl | prepend: site.url}}img/FamMode.jpg)
+![Family structure modes]({{ '/assets/img/FamMode.jpg' | relative_url }})
 
 ## Simulate genotype missing
 
@@ -117,7 +116,7 @@ If you have installed softwares PLINK1.9, PLINK2, and bgenix, then you can use t
 setwd(extDir)
 system("plink --file simuPLINK --make-bed --out simuPLINK")
 system("plink --bfile simuPLINK --recode A --out simuRAW")
-system("plink2 --bfile simuPLINK --export bgen-1.2 bits=8 ref-first --out simuBGEN")  # UK Biobank use 'ref-first'"
+system("plink2 --bfile simuPLINK --export bgen-1.2 bits=8 ref-first --out simuBGEN")
 system("bgenix -g simuBGEN.bgen -index")
 ```
 

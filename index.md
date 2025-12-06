@@ -1,15 +1,14 @@
 ---
-layout: default
+layout: home
 title: Home
 nav_order: 1
-description: "Main page for GRAB package."
+description: "GRAB, an R package of methods designed for biobank data"
 permalink: /
 ---
 
-
 # Overview
 
-The **GRAB** (**G**enome-wide **R**obust **A**nalysis methods designed for **B**iobank data) package is primarily designed to perform genome-wide association studies (GWAS) for both single-variant and set-based analyses, accounting for sample relatedness and population structure. It supports multiple trait types ([GWAS framework](approach.md)), including:
+The **GRAB** (**G**enome-wide **R**obust **A**nalysis methods designed for **B**iobank data) package is primarily designed to perform genome-wide association studies (GWAS) for both single-variant and set-based analyses, accounting for sample relatedness and population structure. It supports multiple trait types ([GWAS framework]({% link docs/approach.md %})), including:
 
 - Ordinal categorical traits
 - Time-to-event traits
@@ -17,9 +16,9 @@ The **GRAB** (**G**enome-wide **R**obust **A**nalysis methods designed for **B**
 
 Additionally, the package can be used to:
 
-- [Simulate genotype](simulation_genotype.md) and [phenotype](simulation_phenotype.md) data
-- [Calculate sparse GRM](GRM.md)
-- [Read genotype data](read_genotype.md) from PLINK or BGEN files
+- [Simulate genotype]({% link docs/simulation_genotype.md %}) and [phenotype]({% link docs/simulation_phenotype.md %}) data
+- [Calculate sparse GRM]({% link docs/GRM.md %})
+- [Read genotype data]({% link docs/read_genotype.md %}) from PLINK or BGEN files
 
 # Installation
 
@@ -67,7 +66,7 @@ EOF
 A prebuilt Docker image for GRAB is available and can be pulled directly from Docker Hub with the following command:
 
 ```sh
-docker pull geneticanalysisinbiobanks/grab:v0.2.3
+docker pull geneticanalysisinbiobanks/grab:latest
 ```
 
 ## License

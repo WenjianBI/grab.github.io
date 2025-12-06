@@ -1,11 +1,8 @@
 ---
 layout: default
 title: WtCoxG
-nav_order: 3
-description: "Just the Docs is a responsive Jekyll theme with built-in search that is easily customizable and hosted on GitHub Pages."
-parent: Genome-wide association studies
-has_children: false
-has_toc: false
+parent: GWAS Methods
+nav_order: 2
 ---
 
 # WtCoxG
@@ -20,8 +17,9 @@ WtCoxG is a Cox-based association test method for time-to-event traits that addr
 - Performs batch effect QC between study cohort and reference population
 - Saddlepoint approximation (SPA) provides accurate p-values, especially for rare variants and extreme case-control ratios
 
-**Citation:**
-Li *et al.* (2025). High-powered, robust, and versatile survival analysis via weighted Cox regression. *Nature Computational Science*. [doi:10.1038/s43588-025-00864-z](https://doi.org/10.1038/s43588-025-00864-z)
+> **Citation:**
+>
+> Li *et al.* (2025). High-powered, robust, and versatile survival analysis via weighted Cox regression. *Nature Computational Science*. [doi:10.1038/s43588-025-00864-z](https://doi.org/10.1038/s43588-025-00864-z)
 
 ---
 
@@ -52,7 +50,7 @@ obj.WtCoxG <- GRAB.NullModel(
 )
 ```
 
-**WtCoxG specific mandatory parameters:**
+### WtCoxG specific mandatory parameters
 
 - `RefAfFile`: Reference allele frequency file (see format below)
 - `RefPrevalence`: Population disease prevalence (0 < p < 0.5)
@@ -60,17 +58,7 @@ obj.WtCoxG <- GRAB.NullModel(
 
 ### `RefAfFile` Format
 
-The reference allele frequency file must be whitespace-delimited and include the following columns:
-
-- **CHROM**: Chromosome
-- **POS**: Position
-- **ID**: Variant identifier
-- **REF**: Reference allele
-- **ALT**: Alternative allele
-- **AF_ref**: Allele frequency in reference population
-- **AN_ref**: Allele number in reference population
-
-**Example:**
+The reference allele frequency file is whitespace-delimited with the following columns:
 
 ```
 CHROM   POS      ID          REF  ALT  AF_ref   AN_ref
@@ -78,6 +66,16 @@ CHROM   POS      ID          REF  ALT  AF_ref   AN_ref
 1       10235    rs540538026  T    A   0.0009   251306
 1       10352    rs555500075  T    A   0.4104   251480
 ```
+
+Format specifications:
+
+- CHROM: Chromosome
+- POS: Position
+- ID: Variant identifier
+- REF: Reference allele
+- ALT: Alternative allele
+- AF_ref: Allele frequency in reference population
+- AN_ref: Allele number in reference population
 
 ### `obj.WtCoxG` Components
 
@@ -113,7 +111,7 @@ GRAB.Marker(obj.WtCoxG, GenoFile, OutputFile)
 head(data.table::fread(OutputFile))
 ```
 
-### Output Columns
+**Output Columns:**
 
 - `Marker`: Variant identifier
 - `Info`: CHR:POS:REF:ALT

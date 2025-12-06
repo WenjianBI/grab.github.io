@@ -1,19 +1,15 @@
 ---
 layout: default
-title: Genome-wide association studies
-nav_order: 4
-description: "Just the Docs is a responsive Jekyll theme with built-in search that is easily customizable and hosted on GitHub Pages."
+title: GWAS Methods
+nav_order: 2
 has_children: true
-has_toc: true
 ---
 
-# GWAS Framework
+# Two-Step Analysis Framework in GRAB
 
 All GWAS methods in GRAB are implemented using the unified two-step analysis framework.
 
-## Two-Step Analysis Framework
-
-### Step 1: Model Fitting and Preprocessing
+## Step 1: Model Fitting and Preprocessing
 
 The first step prepares all necessary components before conducting association tests on each marker or region. This step is performed once per phenotype for all markers or regions and includes:
 
@@ -50,19 +46,21 @@ f1_1     f1_3    0.2272
 f1_2     f1_3    0.1192
 ```
 
-**Format specifications:**
+Format specifications:
 
-- **Column 1:** Subject ID 1
-- **Column 2:** Subject ID 2
-- **Column 3:** Genetic correlation between the two subjects
- 
+- Column 1: Subject ID 1
+- Column 2: Subject ID 2
+- Column 3: Genetic correlation between the two subjects
+
 See [getSparseGRM](GRM.md) for details on generating a sparse GRM.
 
-### Step 2: Association Testing
+---
+
+## Step 2: Association Testing
 
 The second step uses `obj.null` and genotype data to perform association tests for each marker or region.
 
-#### Marker-Level Analysis
+### Marker-Level Analysis
 
 - Single-variant association tests
 - Outputs p-values
@@ -85,7 +83,9 @@ GRAB.Marker(
 - Results are written to `OutputFile`.
 - Refer to `?GRAB.Marker` for detailed parameter instructions.
 
-#### Region-Level Analysis
+---
+
+### Region-Level Analysis
 
 - Variant-set association tests
 - Outputs p-values of SKAT, Burden, and SKAT-O tests
@@ -121,13 +121,15 @@ GENE2    var     rs2001  rs2002
 GENE2    anno    lof     lof
 ```
 
-**Format specifications:**
+Format specifications:
 
 - Column 1: Region/gene identifier
 - Column 2: Row type (`var`, `anno`, or `weight`)
 - Columns 3+: Marker IDs, annotations, or weights
 - `anno` row: Annotation categories for each variant
 - `weight` row (optional): Custom weights for each variant
+
+---
 
 ## Supported Methods
 

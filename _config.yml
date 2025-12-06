@@ -19,37 +19,78 @@
 # in the templates via {{ site.myvariable }}.
 
 title: GRAB
-email: wenjianb@pku.edu.cn
-description: >- # this means to ignore newlines until "baseurl:"
-  Write an awesome description for your new site here. You can edit this
-  line in _config.yml. It will appear in your document head meta (for
-  Google search results) and in your feed.xml site description.
-baseurl: grab.github.io/ 
-url: "https://wenjianbi.github.io/"
-github_username:  WenjianBI
+description: GRAB, an R package of methods designed for biobank data
+baseurl: "/grab.github.io"
+url: "https://wenjianbi.github.io"
+repository: GeneticAnalysisinBiobanks/GRAB
+
+permalink: pretty
+
+# Set default layout for pages in docs folder
+defaults:
+  - scope:
+      path: ""
+      type: "pages"
+    values:
+      layout: "default"
+  - scope:
+      path: "docs"
+      type: "pages"
+    values:
+      layout: "default"
 
 # Build settings
-#theme: minima
-remote_theme: pmarsceill/just-the-docs
-plugins:
-  - jekyll-feed
+remote_theme: just-the-docs/just-the-docs
+color_scheme: light
 
-# Exclude from processing.
-# The following items will not be processed, by default.
-# Any item listed under the `exclude:` key here will be automatically added to
-# the internal "default list".
-#
-# Excluded items can be processed by explicitly listing the directories or
-# their entries' file path in the `include:` list.
-#
-# exclude:
-#   - .sass-cache/
-#   - .jekyll-cache/
-#   - gemfiles/
-#   - Gemfile
-#   - Gemfile.lock
-#   - node_modules/
-#   - vendor/bundle/
-#   - vendor/cache/
-#   - vendor/gems/
-#   - vendor/ruby/
+# Custom CSS
+assets:
+  css:
+    - "assets/css/custom.css"
+
+# Enable math support via MathJax
+markdown: kramdown
+kramdown:
+  math_engine: mathjax
+  syntax_highlighter: rouge
+  input: GFM
+  hard_wrap: false
+
+# Enable or disable heading anchors
+heading_anchors: true
+
+# Aux links for the upper right navigation
+aux_links:
+  "GRAB on GitHub":
+    - "https://github.com/GeneticAnalysisinBiobanks/GRAB"
+
+# Makes Aux links open in a new tab. Default is false
+aux_links_new_tab: false
+
+# Enable or disable the site search
+search_enabled: true
+search:
+  heading_level: 2
+  previews: 2
+  preview_words_before: 3
+  preview_words_after: 3
+  tokenizer_separator: /[\s/]+/
+  rel_url: true
+  button: false
+
+# For copy button on code
+enable_copy_code_button: true
+
+# Exclude from processing
+exclude:
+  - .sass-cache/
+  - .jekyll-cache/
+  - gemfiles/
+  - Gemfile
+  - Gemfile.lock
+  - node_modules/
+  - vendor/
+  - about.markdown
+  - setup_files/
+  - just-the-docs-main/
+  - README.md
