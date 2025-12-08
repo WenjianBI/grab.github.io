@@ -17,8 +17,8 @@ This repository contains the documentation website for the GRAB R package.
 `docs/` directory:
 
 - `docs/approach.md` - GWAS analysis framework overview
-- `docs/approach_POLMM.md` - POLMM method for ordinal categorical traits
-- `docs/approach_Residual.md` - Residual-based methods (SPACox, SPAmix, SPAGRM)
-- `docs/approach_WtCoxG.md` - WtCoxG method for time-to-event traits
+- `docs/approach_ordinal.md` - POLMM method for ordinal categorical traits
+- `docs/approach_residual.md` - Residual-based methods (SPACox, SPAmix, SPAGRM)
+- `docs/approach_survival.md` - WtCoxG method for time-to-event traits
 - `docs/GRM.md` - Genetic Relationship Matrix documentation
 - `docs/simulation_*.md` - Genotype and phenotype simulation utilities

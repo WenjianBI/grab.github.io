@@ -120,7 +120,7 @@ system("plink2 --bfile simuPLINK --export bgen-1.2 bits=8 ref-first --out simuBG
 system("bgenix -g simuBGEN.bgen -index")
 ```
 
-## Rare variants simulation (mainly to evaluate set-based approaches): (to be updated: 2022-08-22)
+## Rare variants simulation (mainly to evaluate set-based approaches)
 
 Given arguments of `MaxMAF` and `MinMAF`, function `GRAB.SimuGMat` can simulate
 
@@ -139,19 +139,12 @@ nFam = 50
 nSub = 500
 FamMode = "10-members"
 
-# PLINK data format
+# PLINK data format (doesn't support BGEN currently)
 PLINKFile = system.file("extdata", "example_n1000_m236.bed", package = "GRAB")
 IDsToIncludeFile = system.file("extdata", "example_n1000_m236.IDsToInclude", package = "GRAB")
 
 GenoList = GRAB.SimuGMatFromGenoFile(nFam, nSub, FamMode, PLINKFile,
                                      control = list(IDsToIncludeFile = IDsToIncludeFile))
-
-# Currently, this function does not support BGEN data format
-# BGENFile = system.file("extdata", "example_n1000_m236.bgen", package = "GRAB")
-# IDsToIncludeFile = system.file("extdata", "example_n1000_m236.IDsToInclude", package = "GRAB")
-
-# GenoList = GRAB.SimuGMatFromGenoFile(nFam, nSub, FamMode, BGENFile,
-#                                      control = list(IDsToIncludeFile = IDsToIncludeFile))
 ```
 
 Then, we make PLINK files using the genotype data

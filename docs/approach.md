@@ -1,13 +1,12 @@
 ---
 layout: default
-title: GWAS Methods
+title: Two-Step GWAS Framework
 nav_order: 2
 has_children: true
 ---
 
-# Two-Step Analysis Framework in GRAB
 
-All GWAS methods in GRAB are implemented using the unified two-step analysis framework.
+All GWAS methods in **GRAB** are implemented using the **unified two-step analysis framework**.
 
 ## Step 1: Model Fitting and Preprocessing
 
@@ -32,7 +31,7 @@ obj.null <- GRAB.NullModel(
 
 **Notes:**
 
-- `obj.null` contains the data structure for step 2.
+- `obj.null` contains the data structure for step two.
 - Refer to `?GRAB.NullModel` for detailed parameter instructions.
 
 ### `SparseGRMFile` Format
@@ -56,15 +55,12 @@ See [getSparseGRM](GRM.md) for details on generating a sparse GRM.
 
 ---
 
-## Step 2: Association Testing
+## Step 2: Marker-Level Analysis
 
-The second step uses `obj.null` and genotype data to perform association tests for each marker or region.
+The second step uses `obj.null` from step one and genotype data to perform association tests for each marker or region. All methods implement the saddlepoint approximation (SPA) to compute p‑values accurately for common, low‑frequency, and rare variants, including when phenotype distributions are highly biased. This step:
 
-### Marker-Level Analysis
-
-- Single-variant association tests
-- Outputs p-values
-- Outputs related statistics and marker info
+- Perform single-variant association tests
+- Outputs p-values and related statistics
 
 **Basic Syntax:**
 
@@ -85,12 +81,11 @@ GRAB.Marker(
 
 ---
 
-### Region-Level Analysis
+## Step 2: Region-Level Analysis
 
 - Variant-set association tests
 - Outputs p-values of SKAT, Burden, and SKAT-O tests
-- Outputs p-values of single variants
-- Outputs related statistics and marker info
+- Outputs p-values of single variants and related statistics
 
 **Basic Syntax:**
 
@@ -131,14 +126,19 @@ Format specifications:
 
 ---
 
-## Supported Methods
+## Supported Trait Types and Scenarios
 
-GRAB supports the following statistical methods designed for different scenarios:
+GRAB supports the following methods[^1] for different trait types and study designs:
 
-| Method                                   | Trait Type                  | Analysis Level      | Sample Structure | Population Structure | Key Feature                              |
-|-------------------------------------------|-----------------------------|---------------------|------------------|---------------------|------------------------------------------|
-| [POLMM](approach_POLMM.md)                | Ordinal categorical         | Marker, Region      | Related          | Homogeneous         | Proportional odds logistic mixed model   |
-| [SPACox](approach_Residual.md)            | Any (primarily time-to-event)| Marker             | Unrelated        | Homogeneous         | Empirical distribution of the score statistic |
-| [SPAmix](approach_Residual.md)            | Any                         | Marker              | Unrelated        | Admixed             | Individual-specific allele frequencies   |
-| [SPAGRM](https://hexupku.github.io/SPAGRM.github.io/) | Any                  | Marker              | Related          | Homogeneous         | Joint distribution of genotypes          |
-| [WtCoxG](approach_WtCoxG.md)              | Time-to-event               | Marker              | Related          | Homogeneous         | Reference population allele frequencies  |
+| Trait Type                            | Unrelated & Homogeneous | Related                                  | Population Structure                     |
+|---------------------------------------|:-----------------------:|:----------------------------------------:|:----------------------------------------:|
+| Binary or quantitative                 | SAIGE                  | SAIGE                                   | [SPAmix]({{ site.baseurl }}{% link docs/approach_Residual.md %}#spamix)    |
+| [Ordinal categorical]({{ site.baseurl }}{% link docs/approach_ordinal.md %})        | [POLMM]({{ site.baseurl }}{% link docs/approach_ordinal.md %}) | [POLMM]({{ site.baseurl }}{% link docs/approach_ordinal.md %})[^2] | [SPAmix]({{ site.baseurl }}{% link docs/approach_Residual.md %}#spamix)    |
+| [Time-to-event]({{ site.baseurl }}{% link docs/approach_survival.md %}) | [SPACox]({{ site.baseurl }}{% link docs/approach_survival.md %}#spacox) | [WtCoxG]({{ site.baseurl }}{% link docs/approach_survival.md %}#wtcoxg) | [SPAmix]({{ site.baseurl }}{% link docs/approach_survival.md %}#spamix)    |
+| [The others]({{ site.baseurl }}{% link docs/approach_Residual.md %})[^3] | [SPACox]({{ site.baseurl }}{% link docs/approach_Residual.md %}#spacox) | [SPAGRM]({{ site.baseurl }}{% link docs/approach_Residual.md %}#spagrm) | [SPAmix]({{ site.baseurl }}{% link docs/approach_Residual.md %}#spamix)    |
+
+[^1]: Methods designed for more complex scenarios also work for simpler ones; when a simpler method suffices, we recommend using it. For binary or quantitative traits in a homogeneous population, consider [SAIGE](https://saigegit.github.io/SAIGE-doc) (not included in GRAB), which is specialized for the scenarios.
+
+[^2]: POLMM supports both marker-lever [(Bi et al, 2021)](https://doi.org/doi:10.1016/j.ajhg.2021.03.019) and region-level [(Bi et al, 2023)](https://doi.org/10.1016/j.ajhg.2023.03.010) analyses.
+
+[^3]: Residual‑based methods provide a generalized framework for GWAS of any trait type [(Bi et al, 2020)](https://doi.org/10.1016/j.ajhg.2020.06.003), and can account for sample relatedness [(Xu et al, 2025)](https://doi.org/10.1038/s41467-025-56669-1) or population structure [(Ma et al, 2025)](https://doi.org/10.1186/s13059-025-03827-9).

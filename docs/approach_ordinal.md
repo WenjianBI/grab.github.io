@@ -1,13 +1,12 @@
 ---
 layout: default
-title: POLMM
-parent: GWAS Methods
+title: Ordinal Categorical
+parent: Two-Step GWAS Framework
 nav_order: 1
 ---
 
-# POLMM
 
-**POLMM** (Proportional Odds Logistic Mixed Model) implements association tests for ordinal categorical phenotypes while accounting for sample relatedness.
+**POLMM** (Proportional Odds Logistic Mixed Model) implements association tests for **ordinal categorical phenotypes** while accounting for sample relatedness.
 
 **Key Features:**
 
@@ -21,6 +20,8 @@ nav_order: 1
 > **Citation:**
 >
 > Bi *et al.* (2021). Efficient mixed model approach for large-scale genome-wide association studies of ordinal categorical phenotypes. *American Journal of Human Genetics*. [doi:10.1016/j.ajhg.2021.03.019](https://doi.org/10.1016/j.ajhg.2021.03.019)
+
+---
 
 **POLMM-GENE** extends POLMM to perform set-based association tests for rare variants in genomic regions (e.g., genes). It is particularly powerful for exome sequencing data.
 
@@ -39,7 +40,7 @@ nav_order: 1
 
 ## Step 1: Model Fitting and Preprocessing
 
-See `?GRAB.NullModel` and `?GRAB.POLMM` for detailed parameter instructions. A quick example is provided below.
+This step is shared by both marker- and region-level analyses and returns the `obj.POLMM` object required for step two. See `?GRAB.NullModel` and `?GRAB.POLMM` for detailed parameter instructions. A quick example is provided below.
 
 ```r
 # Load data
@@ -90,7 +91,7 @@ The POLMM null model object contains:
 
 ---
 
-## Step 2(a): Marker-Level Analysis
+## Step 2 of Marker-Level Analysis
 
 Refer to `?GRAB.Marker` and `?GRAB.POLMM` for detailed parameter instructions. A quick example is provided below.
 
@@ -125,36 +126,19 @@ Additional columns (`ifOutGroup = TRUE`):
 
 ---
 
-## Step 2(b): Set-Based Analysis
+## Step 2 of Region-Level Analysis
 
-Refer to `?GRAB.Region` and `?GRAB.POLMM.Region` for detailed parameter instructions. A quick example is provided below.
+Refer to `?GRAB.Region` and `?GRAB.POLMM.Region` for detailed parameter instructions. A quick example is provided below. The `obj.POLMM` object generated in [Step 1: Model Fitting and Preprocessing](#step-1-model-fitting-and-preprocessing) is needed.
 
 ```r
 # Load data
-GenoFileStep1 <- system.file("extdata", "simuPLINK.bed", package = "GRAB")
-GenoFileStep2 <- system.file("extdata", "simuPLINK_RV.bed", package = "GRAB")
+GenoFileRV <- system.file("extdata", "simuPLINK_RV.bed", package = "GRAB")
 SparseGRMFile <- system.file("extdata", "SparseGRM.txt", package = "GRAB")
 GroupFile <- system.file("extdata", "simuPLINK_RV.group", package = "GRAB")
 OutputFile <- file.path(tempdir(), "resultPOLMMregion.txt")
 
-PhenoFile <- system.file("extdata", "simuPHENO.txt", package = "GRAB")
-PhenoData <- data.table::fread(PhenoFile, header = TRUE)
-PhenoData$OrdinalPheno <- factor(PhenoData$OrdinalPheno, levels = c(0, 1, 2))
-
-# Step 1 (Skip this step if you have already run the example above)
-obj.POLMM <- GRAB.NullModel(
- OrdinalPheno ~ AGE + GENDER,
- data = PhenoData,
- subjIDcol = "IID",
- method = "POLMM",
- traitType = "ordinal",
- GenoFile = GenoFileStep1,
- SparseGRMFile = SparseGRMFile,
- control = list(tolTau = 0.2, tolBeta = 0.1)
-)
-
 # Step 2
-GRAB.Region(obj.POLMM, GenoFileStep2, OutputFile,
+GRAB.Region(obj.POLMM, GenoFileRV, OutputFile,
   GroupFile = GroupFile,
   SparseGRMFile = SparseGRMFile,
   MaxMAFVec = "0.01,0.005"
@@ -163,8 +147,6 @@ GRAB.Region(obj.POLMM, GenoFileStep2, OutputFile,
 # View results
 head(data.table::fread(OutputFile))
 head(data.table::fread(paste0(OutputFile, ".markerInfo")))
-head(data.table::fread(paste0(OutputFile, ".otherMarkerInfo")))
-head(data.table::fread(paste0(OutputFile, ".infoBurdenNoWeight")))
 ```
 
 ### Output Files
