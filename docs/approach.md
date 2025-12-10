@@ -57,7 +57,7 @@ See [getSparseGRM](GRM.md) for details on generating a sparse GRM.
 
 ## Step 2: Marker-Level Analysis
 
-The second step uses `obj.null` from step one and genotype data to perform association tests for each marker or region. All methods implement the saddlepoint approximation (SPA) to compute p‑values accurately for common, low‑frequency, and rare variants, including when phenotype distributions are highly biased. This step:
+This step uses `obj.null` from step one and genotype data to perform association tests for each marker. This step:
 
 - Perform single-variant association tests
 - Outputs p-values and related statistics
@@ -82,6 +82,8 @@ GRAB.Marker(
 ---
 
 ## Step 2: Region-Level Analysis
+
+This step uses `obj.null` from step one, genotype data, and region annotations to perform association tests for each region. This step:
 
 - Variant-set association tests
 - Outputs p-values of SKAT, Burden, and SKAT-O tests

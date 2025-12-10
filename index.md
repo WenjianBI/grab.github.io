@@ -2,7 +2,7 @@
 layout: home
 title: Home
 nav_order: 1
-description: "GRAB, an R package of methods designed for biobank data"
+description: "GRAB, an R package of GWAS methods designed for biobank data"
 permalink: /
 ---
 
@@ -16,9 +16,8 @@ The **GRAB** (**G**enome-wide **R**obust **A**nalysis methods designed for **B**
 
 # Installation
 
-## Install via CRAN
+## [![CRAN Status](https://www.r-pkg.org/badges/version/GRAB)](https://CRAN.R-project.org/package=GRAB) CRAN
 
-[![CRAN Status](https://www.r-pkg.org/badges/version/GRAB)](https://CRAN.R-project.org/package=GRAB)
 ![Linux](https://img.shields.io/badge/Linux-000?logo=linux&logoColor=white)
 ![macOS](https://img.shields.io/badge/macOS-000?logo=apple&logoColor=white)
 ![Windows](https://img.shields.io/badge/Windows-0078D6?logo=windows&logoColor=white)
@@ -29,9 +28,8 @@ Install GRAB from CRAN in your R console:
 install.packages("GRAB", dependencies = TRUE)
 ```
 
-## Install via Conda
+## [![Conda-Forge](https://img.shields.io/conda/vn/conda-forge/r-grab.svg)](https://anaconda.org/conda-forge/r-grab) Conda
 
-[![Conda-Forge](https://img.shields.io/conda/vn/conda-forge/r-grab.svg)](https://anaconda.org/conda-forge/r-grab)
 ![Linux](https://img.shields.io/badge/Linux-000?logo=linux&logoColor=white)
 ![macOS](https://img.shields.io/badge/macOS-000?logo=apple&logoColor=white)
 
@@ -41,9 +39,8 @@ Install GRAB in a new Conda environment named `grab_env` from the `conda-forge` 
 conda create -n grab_env -c conda-forge r-grab r-skat r-dbplyr r-tidyr
 ```
 
-## Pull a Prebuilt Docker Image
+## [![Docker Image Version](https://img.shields.io/docker/v/geneticanalysisinbiobanks/grab?sort=semver&label=Docker%20latest)](https://hub.docker.com/r/geneticanalysisinbiobanks/grab) Docker
 
-[![Docker Image Version](https://img.shields.io/docker/v/geneticanalysisinbiobanks/grab?sort=semver&label=Docker%20latest)](https://hub.docker.com/r/geneticanalysisinbiobanks/grab)
 ![Linux](https://img.shields.io/badge/Linux-000?logo=linux&logoColor=white)
 
 Pull the latest GRAB Docker image from Docker Hub:
