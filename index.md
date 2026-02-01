@@ -55,4 +55,4 @@ docker pull geneticanalysisinbiobanks/grab:latest
 
 ## Contact
 
-If you have any questions about GRAB, please contact [wenjianb@pku.edu.cn](mailto:wenjianb@pku.edu.cn).
+If you have any questions about GRAB, please contact miaolin&#64;pku.edu.cn.
